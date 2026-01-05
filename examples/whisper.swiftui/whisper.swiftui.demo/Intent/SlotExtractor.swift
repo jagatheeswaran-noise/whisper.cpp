@@ -243,14 +243,42 @@ class SlotExtractor {
             "asleep", "bedtime", "night sleep", "shuteye", "zzz", "sleep time",
             "sleep duration", "hours slept", "sleep hours"
         ],
+        "deep sleep score": [
+            "deep sleep score", "deep sleep quality", "deep sleep rating", 
+            "deep sleep performance", "deep sleep analysis", "deep sleep grade",
+            "deep sleep metric", "deep sleep efficiency", "slow wave sleep score", "sws score", "deep sleep level"
+        ],
+        "rem sleep score": [
+            "rem sleep score", "rem sleep quality", "rem sleep rating",
+            "rem sleep performance", "rem sleep analysis", "rem sleep grade",
+            "rem sleep metric", "rem sleep efficiency", "rem score",
+            "rapid eye movement score", "dream sleep score", "rem sleep level"
+        ],
+        "light sleep score": [
+            "light sleep score", "light sleep quality", "light sleep rating",
+            "light sleep performance", "light sleep analysis", "light sleep grade",
+            "light sleep metric", "light sleep efficiency", "shallow sleep score", "light sleep level"
+        ],
         "sleep score": [
             "sleep score", "sleep quality", "sleep rating", "sleep performance",
             "sleep analysis", "sleep grade", "sleep rank", "sleep level",
             "sleep efficiency", "sleep assessment", "how well slept", "sleep health",
             "sleep metric", "sleep stats", "sleep report", "sleep evaluation"
         ],
+        "rem sleep": [
+            "rem sleep", "rem", "rem sleeping", "rapid eye movement", 
+            "rapid eye movement sleep", "rem stage", "rem phase", 
+            "rem sleep time", "rem sleep duration", "rem sleep hours", 
+            "rem period", "dream sleep", "rem cycle"
+        ],
+        "light sleep": [
+            "light sleep", "light sleeping", "shallow sleep", "superficial sleep",
+            "stage 1", "stage 2", "stage one", "stage two",
+            "light sleep time", "light sleep duration", "light sleep hours",
+            "light rest", "light phase", "light stage"
+        ],
         "deep sleep": [
-            "deep sleep", "deep sleeping", "deep slumber", "rem sleep", "rem",
+            "deep sleep", "deep sleeping", "deep slumber", 
             "deep rest", "deep phase", "deep stage", "stage 3", "stage 4",
             "slow wave sleep", "sws", "restorative sleep", "deep sleep time",
             "deep sleep duration", "deep sleep hours", "deep sleep stage",
@@ -340,7 +368,7 @@ class SlotExtractor {
             "7 days ago", "last weeks", "last week's", "the preceding week",
             "most recent week", "latest week", "former week", "earlier week",
             "the other week", "back last week", "during last week", "throughout last week",
-            "over last week"
+            "over last week", "last seven days", "last 7 days"
         ],
         "this month": [
             "this month", "current month", "monthly", "so far this month",
@@ -389,13 +417,19 @@ class SlotExtractor {
     private let distanceRegex = try! NSRegularExpression(pattern: "\\b(?:far|distance|km|kilometers|kilometre|kilometres|mile|miles|meter|meters|metre|metres|feet|ft|yard|yards|yd|long|length|covered|travelled|traveled|route|path|journey|span|range|how far|mileage)\\b", options: [.caseInsensitive])
     private let sleepRegex = try! NSRegularExpression(pattern: "\\b(?:sleep|slept|sleeping|asleep|nap|napped|napping|rest|rested|resting|snooze|snoozed|snoozing|doze|dozed|dozing|slumber|bedtime|night|overnight|bed|zzz)\\b", options: [.caseInsensitive])
     private let sleepQualityRegex = try! NSRegularExpression(pattern: "\\b(?:quality|score|rating|rate|well|badly|good|bad|poor|deep|light|efficiency|grade|rank|analysis|performance|how well)\\b", options: [.caseInsensitive])
-    private let deepSleepRegex = try! NSRegularExpression(pattern: "\\b(?:deep\\s+sleep|deep\\s+sleeping|deep\\s+slumber|rem\\s+sleep|rem|slow\\s+wave\\s+sleep|sws|restorative\\s+sleep|profound\\s+sleep|heavy\\s+sleep|sound\\s+sleep|stage\\s+(?:3|4|three|four))\\b", options: [.caseInsensitive])
+    private let remSleepRegex = try! NSRegularExpression(pattern: "\\b(?:rem\\s+sleep|rem\\s+sleeping|rem|rapid\\s+eye\\s+movement|rapid\\s+eye\\s+movement\\s+sleep|rem\\s+(?:stage|phase|time|duration|hours|period|cycle)|dream\\s+sleep)\\b", options: [.caseInsensitive])
+    private let remSleepScoreRegex = try! NSRegularExpression(pattern: "\\b(?:rem\\s+sleep\\s+(?:score|quality|rating|performance|analysis|grade|metric|efficiency)|rapid\\s+eye\\s+movement\\s+score|dream\\s+sleep\\s+score)\\b", options: [.caseInsensitive])
+    private let lightSleepRegex = try! NSRegularExpression(pattern: "\\b(?:light\\s+sleep|light\\s+sleeping|shallow\\s+sleep|superficial\\s+sleep|stage\\s+(?:1|2|one|two)(?:\\s+sleep)?|light\\s+(?:stage|phase|time|duration|hours|rest))\\b", options: [.caseInsensitive])
+    private let lightSleepScoreRegex = try! NSRegularExpression(pattern: "\\b(?:light\\s+sleep\\s+(?:score|quality|rating|performance|analysis|grade|metric|efficiency)|shallow\\s+sleep\\s+score)\\b", options: [.caseInsensitive])
+    private let deepSleepRegex = try! NSRegularExpression(pattern: "\\b(?:deep\\s+sleep|deep\\s+sleeping|deep\\s+slumber|slow\\s+wave\\s+sleep|sws|restorative\\s+sleep|profound\\s+sleep|heavy\\s+sleep|sound\\s+sleep|stage\\s+(?:3|4|three|four))\\b", options: [.caseInsensitive])
+    private let deepSleepScoreRegex = try! NSRegularExpression(pattern: "\\b(?:deep\\s+sleep\\s+(?:score|quality|rating|performance|analysis|grade|metric|efficiency)|slow\\s+wave\\s+sleep\\s+score|sws\\s+score)\\b", options: [.caseInsensitive])
     private let heartRegex = try! NSRegularExpression(pattern: "\\b(?:heart|cardiac|cardio|cardiovascular|pulse|beat|beats|beating|bpm|rhythm|ticker)\\b", options: [.caseInsensitive])
     private let caloriesRegex = try! NSRegularExpression(pattern: "\\b(?:calorie|calories|kcal|energy|burn|burned|burnt|burning|expend|expended|consume|consumed|intake|kilojoule|kilojoules|kj|food energy|metabolic|metabolism|fat)\\b", options: [.caseInsensitive])
     private let oxygenRegex = try! NSRegularExpression(pattern: "\\b(?:oxygen|o2|spo2|saturation|sat|blood oxygen|pulse ox|oximeter|oximetry|breathing|respiratory|respiration|air|breathe)\\b", options: [.caseInsensitive])
     private let weightRegex = try! NSRegularExpression(pattern: "\\b(?:weight|weigh|weighing|weighed|kg|kilogram|kilograms|pound|pounds|lbs|lb|body mass|bmi|body weight|mass|scale|heavy|light|stone|gram|grams|ounce|ounces|oz)\\b", options: [.caseInsensitive])
     private let stressRegex = try! NSRegularExpression(pattern: "\\b(?:stress|stressed|stressful|anxiety|anxious|tension|tense|worried|worry|worrying|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|mental health|relaxation|relax|calm|peace|peaceful)\\b", options: [.caseInsensitive])
     private let standingRegex = try! NSRegularExpression(pattern: "\\b(?:standing|stand|stood|upright|vertical|on feet|on my feet|stand hours|standing hours|stand time|standing time|stand goal|standing goal|stand ring|standing ring|stand activity|standing activity|stand up|stood up)\\b", options: [.caseInsensitive])
+    private let awakeRegex = try! NSRegularExpression(pattern: "\\b(?:awake|waking|woke|awaken|awakened|time\\s+awake|hours\\s+awake|awake\\s+time|waking\\s+time|wake\\s+time|time\\s+spent\\s+awake|time\\s+spent\\s+waking)\\b", options: [.caseInsensitive])
     private let vo2Regex = try! NSRegularExpression(pattern: "\\b(?:vo2|vo2\\s*max|vo2max|v\\s*o\\s*2|v\\s*o\\s*2\\s*max|vo\\s*2|vo\\s*2\\s*max|vo\\s*two|vo\\s*two\\s*max|v\\s*o\\s*two|aerobic\\s+capacity|aerobic\\s+fitness|cardio\\s+fitness|cardiovascular\\s+fitness|max\\s+oxygen|maximum\\s+oxygen|oxygen\\s+uptake|cardio\\s+capacity|endurance\\s+capacity|fitness\\s+level|aerobic\\s+power|oxygen\\s+capacity|cardiorespiratory)\\b", options: [.caseInsensitive])
     private let heartRateUnitRegex = try! NSRegularExpression(pattern: "\\b(?:heart\\s+rate|pulse|hr)\\b", options: [.caseInsensitive])
     private let weightUnitRegex = try! NSRegularExpression(pattern: "\\b(?:weight|weigh)\\b", options: [.caseInsensitive])
@@ -590,6 +624,31 @@ class SlotExtractor {
         
         // Context-based inference with expanded patterns
         
+        // Deep Sleep Score context - check FIRST before deep sleep or sleep score
+        if deepSleepScoreRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "deep sleep score"
+        }
+        
+        // REM Sleep Score context - check BEFORE rem sleep
+        if remSleepScoreRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "rem sleep score"
+        }
+        
+        // Light Sleep Score context - check BEFORE light sleep
+        if lightSleepScoreRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "light sleep score"
+        }
+        
+        // REM Sleep context - check BEFORE general sleep and deep sleep
+        if remSleepRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "rem sleep"
+        }
+        
+        // Light Sleep context - check BEFORE general sleep
+        if lightSleepRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "light sleep"
+        }
+
         // Deep Sleep context - check BEFORE general sleep
         if deepSleepRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
             return "deep sleep"
@@ -643,7 +702,7 @@ class SlotExtractor {
             
             "today": "\\btoday\\b(?!\\s+(?:morning|afternoon|evening|night))|\\bcurrently\\b|\\bthis\\s+day\\b|\\bat\\s+present\\b|\\bso\\s+far\\s+today\\b|\\btodays?\\b|\\bcurrent\\s+day\\b|\\bas\\s+of\\s+today\\b|\\btill\\s+now\\b|\\bup\\s+to\\s+now\\b|\\bpresently\\b|\\bat\\s+this\\s+time\\b|\\bthis\\s+very\\s+day\\b|\\bthe\\s+present\\s+day\\b|\\bfor\\s+today\\b|\\bon\\s+this\\s+day\\b|\\bsince\\s+midnight\\b|\\bso\\s+far\\b|\\buntil\\s+now\\b|\\bas\\s+of\\s+now\\b|\\blater\\s+today\\b|\\bend\\s+of\\s+(?:the\\s+)?day\\b",
             
-            "last week": "\\blast\\s+week\\b|\\bpast\\s+week\\b|\\bprevious\\s+week\\b|\\bthe\\s+week\\s+before\\b|\\bprior\\s+week\\b|\\b1\\s+week\\s+ago\\b|\\bone\\s+week\\s+ago\\b|\\ba\\s+week\\s+ago\\b|\\bweek\\s+prior\\b|\\bthe\\s+last\\s+week\\b|\\bthe\\s+past\\s+week\\b|\\bthe\\s+previous\\s+week\\b|\\b7\\s+days\\s+ago\\b|\\blast\\s+weeks?\\b|\\bthe\\s+preceding\\s+week\\b|\\bmost\\s+recent\\s+week\\b|\\blatest\\s+week\\b|\\bformer\\s+week\\b|\\bearlier\\s+week\\b|\\bthe\\s+other\\s+week\\b|\\bduring\\s+last\\s+week\\b|\\bthroughout\\s+last\\s+week\\b|\\bover\\s+last\\s+week\\b|\\bback\\s+last\\s+week\\b",
+            "last week": "\\blast\\s+week\\b|\\bpast\\s+week\\b|\\bprevious\\s+week\\b|\\bthe\\s+week\\s+before\\b|\\bprior\\s+week\\b|\\b1\\s+week\\s+ago\\b|\\bone\\s+week\\s+ago\\b|\\ba\\s+week\\s+ago\\b|\\bweek\\s+prior\\b|\\bthe\\s+last\\s+week\\b|\\bthe\\s+past\\s+week\\b|\\bthe\\s+previous\\s+week\\b|\\b7\\s+days\\s+ago\\b|\\blast\\s+weeks?\\b|\\bthe\\s+preceding\\s+week\\b|\\bmost\\s+recent\\s+week\\b|\\blatest\\s+week\\b|\\bformer\\s+week\\b|\\bearlier\\s+week\\b|\\bthe\\s+other\\s+week\\b|\\bduring\\s+last\\s+week\\b|\\bthroughout\\s+last\\s+week\\b|\\bover\\s+last\\s+week\\b|\\bback\\s+last\\s+week\\b|\\blast\\s+seven\\s+days\\b|\\blast\\s+7\\s+days\\b",
             
             "tomorrow": "\\btomorrow\\b|\\bnext\\s+day\\b|\\bthe\\s+day\\s+after\\b|\\bday\\s+after\\b|\\btomorrow\\s+morning\\b|\\btomorrow\\s+afternoon\\b|\\btomorrow\\s+evening\\b|\\btomorrow\\s+night\\b|\\bcoming\\s+day\\b|\\bupcoming\\s+day\\b|\\bfuture\\s+day\\b|\\bthe\\s+following\\s+day\\b|\\b24\\s+hours\\s+from\\s+now\\b|\\bin\\s+24\\s+hours\\b|\\bby\\s+tomorrow\\b|\\btill\\s+tomorrow\\b|\\buntil\\s+tomorrow\\b",
             
@@ -745,6 +804,10 @@ class SlotExtractor {
         }
         
         if sleepRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
+            return "hours"
+        }
+
+        if awakeRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
             return "hours"
         }
         
@@ -2503,12 +2566,47 @@ class SlotExtractor {
                 "\\bhours?\\s+(?:of\\s+)?deep\\s+sleep\\b",
                 "\\bprofound\\s+sleep\\b|\\bheavy\\s+sleep\\b|\\bsound\\s+sleep\\b"
             ],
+            "light sleep": [
+                "\\blight\\s+sleep\\b|\\blight\\s+sleeping\\b",
+                "\\bstage\\s+(?:1|2|one|two)(?:\\s+sleep)?\\b",
+                "\\bhow\\s+(?:much|long).*light\\s+sleep\\b",
+                "\\blight\\s+sleep\\s+(?:time|duration|hours|quality|data)\\b",
+                "\\b(?:total|nightly)\\s+light\\s+sleep\\b",
+                "\\bhours?\\s+(?:of\\s+)?light\\s+sleep\\b",
+                "\\bshallow\\s+sleep\\b|\\bsuperficial\\s+sleep\\b"
+            ],
+            "REM sleep": [
+                "\\brem\\s+sleep\\b|\\brem\\s+sleeping\\b",
+                "\\brapid\\s+eye\\s+movement\\b|\\br\\.?e\\.?m\\.?\\b",
+                "\\bhow\\s+(?:much|long).*rem\\s+sleep\\b",
+                "\\brem\\s+sleep\\s+(?:time|duration|hours|quality|data)\\b",
+                "\\b(?:total|nightly)\\s+rem\\s+sleep\\b",
+                "\\bhours?\\s+(?:of\\s+)?rem\\s+sleep\\b",
+                "\\bdream\\s+(?:sleep|stage|phase)\\b",
+                "\\brem\\s+(?:stage|phase|cycle)\\b"
+            ],
+            "awake": [
+                "\\bawake\\b|\\bawoken\\b|\\bawakening\\b|\\bawakenings?\\b",
+                "\\bwoke\\s+up\\b|\\bwoken\\s+up\\b|\\bwaking\\s+up\\b",
+                "\\bhow\\s+(?:much|long|many).*(?:awake|woke)\\b",
+                "\\bawake\\s+(?:time|duration|hours|periods?)\\b",
+                "\\btime\\s+(?:spent\\s+)?awake\\b",
+                "\\b(?:total|nightly)\\s+awake\\s+time\\b",
+                "\\bhours?\\s+awake\\b|\\bhours?\\s+(?:of\\s+)?waking\\b",
+                "\\bwake\\s+time\\b|\\bwaking\\s+time\\b",
+                "\\brestless\\b|\\btossing\\b|\\bturning\\b",
+                "\\bsleep\\s+disruption\\b|\\bsleep\\s+interruption\\b"
+            ],
             "sleep": [
-                "\\bsleep|slept|sleeping|rest|rested\\b(?!.*deep)",
-                "\\bnap|napped|napping|slumber\\b",
-                "\\bbedtime|night\\s+sleep|sleep\\s+time\\b(?!.*deep)",
-                "\\bhow\\s+(?:much|long|well).*sleep\\b(?!.*deep)",
-                "\\blight\\s+sleep\\b"
+                "\\bsleep\\b|\\bslept\\b|\\bsleeping\\b|\\basleep\\b",
+                "\\brest\\b|\\brested\\b|\\bresting\\b",
+                "\\bhow\\s+(?:much|long|well).*sleep\\b(?!.*(?:deep|light|rem))",
+                "\\b(?:last\\s+)?night'?s\\s+sleep\\b|\\btonight'?s\\s+sleep\\b",
+                "\\bsleep\\s+(?:time|duration|hours|quality|data|tracking|pattern)\\b(?!.*(?:deep|light|rem))",
+                "\\b(?:total|nightly)\\s+sleep\\b(?!.*(?:deep|light|rem))",
+                "\\bhours?\\s+(?:of\\s+)?sleep\\b(?!.*(?:deep|light|rem))|\\bslept\\s+(?:for\\s+)?\\d+\\s+hours?\\b",
+                "\\bnap\\b|\\bnapped\\b|\\bnapping\\b|\\bsnooze\\b",
+                "\\bsleep\\s+(?:score|rating|efficiency|quality)\\b(?!.*(?:deep|light|rem))"
             ],
             "sleep score": [
                 "\\bsleep\\s+(?:quality|score|rating|performance|analysis|efficiency)\\b",
@@ -2563,10 +2661,26 @@ class SlotExtractor {
             ]
         ]
         
-        // Sort by specificity (more specific patterns first)
-        let sortedMetrics = inferencePatterns.sorted { $0.value.joined().count > $1.value.joined().count }
+        // Define sleep-related metrics that need priority checking
+        let sleepMetrics = listOf("deep sleep", "light sleep", "REM sleep", "awake", "sleep")
         
-        for (metric, patterns) in sortedMetrics {
+        // Check sleep metrics in priority order first
+        for (sleepMetric in sleepMetrics) {
+            inferencePatterns[sleepMetric]?.let { patterns ->
+                for (pattern in patterns) {
+                    if (pattern.containsMatchIn(text)) {
+                        return sleepMetric
+                    }
+                }
+            }
+        }
+        
+        // Then check other metrics sorted by specificity
+        let nonSleepMetrics = inferencePatterns.entries
+            .filter { it.key !in sleepMetrics }
+            .sortedByDescending { it.value.sumOf { pattern -> pattern.pattern.length } }
+        
+        for ((metric, patterns) in nonSleepMetrics) {
             for pattern in patterns {
                 if text.range(of: pattern, options: .regularExpression) != nil {
                     return metric
