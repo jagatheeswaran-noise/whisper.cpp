@@ -2662,13 +2662,13 @@ class SlotExtractor {
         ]
         
         // Define sleep-related metrics that need priority checking
-        let sleepMetrics = listOf("deep sleep", "light sleep", "REM sleep", "awake", "sleep")
+        let sleepMetrics = ["deep sleep", "light sleep", "REM sleep", "awake", "sleep"]
         
         // Check sleep metrics in priority order first
-        for (sleepMetric in sleepMetrics) {
-            inferencePatterns[sleepMetric]?.let { patterns ->
-                for (pattern in patterns) {
-                    if (pattern.containsMatchIn(text)) {
+        for sleepMetric in sleepMetrics {
+            if let patterns = inferencePatterns[sleepMetric] {
+                for pattern in patterns {
+                    if text.range(of: pattern, options: .regularExpression) != nil {
                         return sleepMetric
                     }
                 }
@@ -2676,11 +2676,11 @@ class SlotExtractor {
         }
         
         // Then check other metrics sorted by specificity
-        let nonSleepMetrics = inferencePatterns.entries
-            .filter { it.key !in sleepMetrics }
-            .sortedByDescending { it.value.sumOf { pattern -> pattern.pattern.length } }
+        let nonSleepMetrics = inferencePatterns
+            .filter { !sleepMetrics.contains($0.key) }
+            .sorted { $0.value.map { $0.count }.reduce(0, +) > $1.value.map { $0.count }.reduce(0, +) }
         
-        for ((metric, patterns) in nonSleepMetrics) {
+        for (metric, patterns) in nonSleepMetrics {
             for pattern in patterns {
                 if text.range(of: pattern, options: .regularExpression) != nil {
                     return metric
