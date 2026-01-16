@@ -1394,7 +1394,7 @@ class SlotExtractor {
     
     private fun extractFeature(text: String): String? {
         val features = mapOf(
-            "do not disturb" to "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
+            "do not disturb" to "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
             
             "AOD" to "\\b(?:AOD|aod|a\\.?o\\.?d\\.?|always\\s+on\\s+display|always-on\\s+display|always\\s+on|screen\\s+always\\s+on|display\\s+always\\s+on|persistent\\s+display|constant\\s+display|continuous\\s+display|keep\\s+screen\\s+on|screen\\s+stays\\s+on|display\\s+on|ambient\\s+display|glance\\s+screen|standby\\s+screen)\\b",
             
@@ -1630,7 +1630,7 @@ class SlotExtractor {
             text.contains("\\b(?:timer|timers|countdown|count\\s+down|set\\s+timer|start\\s+timer|kitchen\\s+timer|cooking\\s+timer|egg\\s+timer|time\\s+me|timing|timed|set\\s+a\\s+timer|countdown\\s+timer|interval\\s+timer|remind\\s+me\\s+in|alert\\s+in|notify\\s+in|time\\s+limit|duration|time\\s+out)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "timer"
             
             // Stopwatch - expanded with 20+ variations
-            text.contains("\\b(?:stopwatch|stop\\s+watch|chronometer|lap\\s+timer|lap\\s+time|split\\s+time|time\\s+lap|elapsed\\s+time|running\\s+time|measure\\s+time|track\\s+time|timing|chrono|lap|laps|split|splits|time\\s+it|how\\s+long|duration\\s+tracker)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "stopwatch"
+            text.contains("\\b(?:stopwatch|stop\\s+watch|start\\s*,?\\s*stop\\s*,?\\s*watch|chronometer|lap\\s+timer|lap\\s+time|split\\s+time|time\\s+lap|elapsed\\s+time|running\\s+time|measure\\s+time|track\\s+time|timing|chrono|lap|laps|split|splits|time\\s+it|how\\s+long|duration\\s+tracker)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "stopwatch"
             else -> null
         }
     }

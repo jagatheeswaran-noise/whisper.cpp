@@ -120,6 +120,20 @@ class IntentClassifier(private val context: Context) {
         return try {
             Log.d(LOG_TAG, "🔍 Classifying: '$text'")
             
+            // Pre-classification rules for specific patterns that ML might misclassify
+            // Check for "start, stop, watch" stopwatch pattern
+            if (text.contains("\\bstart\\s*,?\\s*stop\\s*,?\\s*watch\\b".toRegex(RegexOption.IGNORE_CASE))) {
+                Log.d(LOG_TAG, "🎯 Pre-classification: Detected stopwatch pattern 'start, stop, watch'")
+                val slotResult = slotExtractor.extractSlots(text, "TimerStopwatch")
+                return IntentResult(
+                    intent = "TimerStopwatch",
+                    confidence = 0.95f,
+                    allProbabilities = mapOf("TimerStopwatch" to 0.95f),
+                    slots = slotResult.slots,
+                    slotConfidence = slotResult.confidence
+                )
+            }
+            
             // Step 1: Tokenize text using BERT tokenizer
             val tokenization = tokenizeText(text)
             val inputIds = tokenization.first

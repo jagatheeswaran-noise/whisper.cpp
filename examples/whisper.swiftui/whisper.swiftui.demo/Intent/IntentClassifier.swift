@@ -349,6 +349,20 @@ class IntentClassifier: ObservableObject {
         do {
             Self.logger.info("Classifying: '\(text)'")
             
+            // Pre-classification rules for specific patterns that ML might misclassify
+            // Check for "start, stop, watch" stopwatch pattern
+            if text.range(of: "\\bstart\\s*,?\\s*stop\\s*,?\\s*watch\\b", options: .regularExpression) != nil {
+                Self.logger.info("Pre-classification: Detected stopwatch pattern 'start, stop, watch'")
+                let slotResult = await slotExtractor.extractSlots(text: text, intent: "TimerStopwatch")
+                return IntentResult(
+                    intent: "TimerStopwatch",
+                    confidence: 0.95,
+                    allProbabilities: ["TimerStopwatch": 0.95],
+                    slots: slotResult.slots,
+                    slotConfidence: slotResult.confidence
+                )
+            }
+            
             // Step 1: Tokenize text using BERT tokenizer
             let tokenization = try await tokenizeText(text)
             let inputIds = tokenization.inputIds
