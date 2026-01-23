@@ -2036,7 +2036,7 @@ class SlotExtractor {
                 val cleanedName = extractedName
                     .replace(Regex("^(?:to|my|the|a|an)\\s+", RegexOption.IGNORE_CASE), "")
                     .replace(Regex("\\s+(?:please|now|right\\s+now|immediately|asap|urgently)$", RegexOption.IGNORE_CASE), "")
-                    .replace(Regex("[^a-zA-Z\\s]"), "")
+                    .replace(Regex("[^a-zA-Z0-9\\s]"), "") // Keep alphanumeric and spaces
                     .trim()
 
                 // Additional validation: make sure it's not just common words
@@ -2048,8 +2048,7 @@ class SlotExtractor {
                 )
                 if (cleanedName.isNotEmpty() && 
                     cleanedName.length > 1 && 
-                    !commonWords.contains(cleanedName.toLowerCase()) &&
-                    !cleanedName.matches(Regex("^\\d+$"))) { // Not just numbers
+                    !commonWords.contains(cleanedName.toLowerCase())) {
                     return cleanedName
                 }
             }

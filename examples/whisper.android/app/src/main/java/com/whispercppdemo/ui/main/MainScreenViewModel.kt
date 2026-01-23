@@ -23,6 +23,9 @@ import com.whispercppdemo.recorder.Recorder
 import com.whispercppdemo.intent.IntentClassifier
 import com.whispercppdemo.intent.IntentResult
 import com.whispercppdemo.intent.SlotExtractor
+import com.whispercppdemo.contact.ContactMatcher
+import com.whispercppdemo.contact.ContactMatchResult
+import com.whispercppdemo.contact.MatchType
 import com.whispercpp.whisper.WhisperContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -38,8 +41,8 @@ import java.nio.ByteOrder
 
 private const val LOG_TAG = "MainScreenViewModel"
 
-// Prompt to improve short command recognition
-private const val PROMPT = "Voice commands, Start Running, stop, start, record, play, pause, resume, next, previous, open, left, right, go, back, help, exit, set an, alarm, timer, stopwatch, set an alarm, set alarm, set timer 5 min, start stopwatch, stop timer, reset stopwatch, pause timer, resume timer, call mom, call dad, call john, call alex, call sister, call brother, call wife, call husband, call shreya, call best friend, mute, unmute, volume up, volume down, brightness up, brightness down, increase, decrease, dim, silence, music, song, track, what's the weather today, weather tomorrow, forecast, rain, snow, air quality, steps today, steps this week, weekly steps, sleep score, sleep score yesterday, sleep score last week, what is my heart rate today, weekly heart rate, how much calories today, calories yesterday, spo2 level today, spo2 yesterday, stress alert, set stress 80%, set heart rate high 120, set heart rate low 50, set spo2 low 90, set distance goal 5 km, set steps goal 10000, set calories goal 2000, update sleep goal 8 hours, hiking, running, walking, treadmill, swimming, rowing, yoga, meditation, cycling, indoor cycling, strength training, workout start, workout stop, workout pause, open weather, open spo2, measure spo2, show trend, weekly trend, last week, yesterday, today, tomorrow, DND, enable DND, disable DND, AOD on, AOD off, raise to wake on, raise to wake off, vibration on, vibration off"
+// Base prompt to improve short command recognition (contacts will be added dynamically)
+private const val BASE_PROMPT = "Voice commands, Start Running, stop, start, record, play, pause, resume, next, previous, open, left, right, go, back, help, exit, set an, alarm, timer, stopwatch, set an alarm, set alarm, set timer 5 min, start stopwatch, stop timer, reset stopwatch, pause timer, resume timer, mute, unmute, volume up, volume down, brightness up, brightness down, increase, decrease, dim, silence, music, song, track, what's the weather today, weather tomorrow, forecast, rain, snow, air quality, steps today, steps this week, weekly steps, sleep score, sleep score yesterday, sleep score last week, what is my heart rate today, weekly heart rate, how much calories today, calories yesterday, spo2 level today, spo2 yesterday, stress alert, set stress 80%, set heart rate high 120, set heart rate low 50, set spo2 low 90, set distance goal 5 km, set steps goal 10000, set calories goal 2000, update sleep goal 8 hours, hiking, running, walking, treadmill, swimming, rowing, yoga, meditation, cycling, indoor cycling, strength training, workout start, workout stop, workout pause, open weather, open spo2, measure spo2, show trend, weekly trend, last week, yesterday, today, tomorrow, DND, enable DND, disable DND, AOD on, AOD off, raise to wake on, raise to wake off, vibration on, vibration off"
 
 class MainScreenViewModel(private val application: Application) : AndroidViewModel(application) {
     var canTranscribe by mutableStateOf(false)
@@ -57,9 +60,11 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
     private var whisperContext: WhisperContext? = null
     private var intentClassifier: IntentClassifier? = null
     private val slotExtractor = SlotExtractor()
+    private lateinit var contactMatcher: ContactMatcher
     private var mediaPlayer: MediaPlayer? = null
     private var recordedFile: File? = null
     private var currentRecordingTimestamp: String? = null
+    private var dynamicPrompt: String = BASE_PROMPT
 
     companion object {
         fun factory(application: Application): ViewModelProvider.Factory = viewModelFactory {
@@ -89,9 +94,11 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
         private set
 
     init {
+        contactMatcher = ContactMatcher(application)
         viewModelScope.launch {
             setupStorageDirectories()
             printSystemInfo()
+            loadContactsAndBuildPrompt()
             loadData()
         }
     }
@@ -148,6 +155,37 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                 // Below Android 6 - Permission granted by default
                 true
             }
+        }
+    }
+
+    private suspend fun loadContactsAndBuildPrompt() = withContext(Dispatchers.IO) {
+        try {
+            val contactsJson = application.assets.open("contacts.json").bufferedReader().use { it.readText() }
+            val jsonObject = JSONObject(contactsJson)
+            val contactsArray = jsonObject.getJSONArray("contacts")
+            
+            val contactCommands = mutableListOf<String>()
+            for (i in 0 until contactsArray.length()) {
+                val contactName = contactsArray.getString(i)
+                contactCommands.add("call $contactName")
+            }
+            
+            // Build the dynamic prompt with contacts
+            dynamicPrompt = if (contactCommands.isNotEmpty()) {
+                "$BASE_PROMPT, ${contactCommands.joinToString(", ")}"
+            } else {
+                BASE_PROMPT
+            }
+            
+            // Load contacts into ContactMatcher
+            contactMatcher.loadContacts()
+            Log.d(LOG_TAG, dynamicPrompt)
+            Log.d(LOG_TAG, "Loaded ${contactsArray.length()} contacts for prompt")
+            printMessage("Loaded ${contactsArray.length()} contacts for voice commands\n")
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Error loading contacts.json, using base prompt", e)
+            dynamicPrompt = BASE_PROMPT
+            printMessage("Using base prompt (contacts.json not found or error loading)\n")
         }
     }
 
@@ -436,7 +474,7 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
             printMessage("${data.size / (16000 / 1000)} ms\n")
             printMessage("Transcribing data...\n")
             val start = System.currentTimeMillis()
-            val text = whisperContext?.transcribeData(data, printTimestamp = true, prompt = PROMPT)
+            val text = whisperContext?.transcribeData(data, printTimestamp = true, prompt = dynamicPrompt)
             val elapsed = System.currentTimeMillis() - start
             printMessage("Done ($elapsed ms): \n$text\n")
             
@@ -558,7 +596,7 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                 
                                 // Measure transcription time
                                 val transcriptionStart = System.currentTimeMillis()
-                                val result = context.transcribeData(audioChunk, printTimestamp = false, prompt = PROMPT)
+                                val result = context.transcribeData(audioChunk, printTimestamp = false, prompt = dynamicPrompt)
                                 val transcriptionElapsed = System.currentTimeMillis() - transcriptionStart
                                 
                                 if (result.isNotBlank()) {
@@ -568,8 +606,11 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                         // Replace transcript with new result since it's a command
                                         currentTranscript = result.trim()
                                         transcriptionTime = "Transcribed in ${transcriptionElapsed}ms at ${getCurrentTimeString()}"
-                                        printMessage("Command detected: $result\n")
+                                        dataLog = "" // Clear previous logs
+                                        printMessage("\n" + "=".repeat(60) + "\n")
+                                        printMessage("TRANSCRIPT: $result\n")
                                         printMessage("Transcription time: ${transcriptionElapsed}ms\n")
+                                        printMessage("=".repeat(60) + "\n")
                                     }
                                     
                                     // Classify intent for the transcribed text and save to CSV
@@ -579,11 +620,77 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                             val intentResult = classifyIntentFromTranscript(result.trim())
                                             
                                             // Extract slots
-                                            val slotResult = slotExtractor.extractSlots(result.trim(), intentResult)
-                                            val slotsJson = JSONObject(slotResult.slots).toString()
+                                            var slotResult = slotExtractor.extractSlots(result.trim(), intentResult)
+                                            val updatedSlots: MutableMap<String, Any> = slotResult.slots.toMutableMap()
+                                            
+                                            // If intent is PhoneAction, perform contact matching
+                                            if (intentResult == "PhoneAction" && updatedSlots.containsKey("contact")) {
+                                                val extractedName = updatedSlots["contact"] as? String
+                                                if (!extractedName.isNullOrBlank()) {
+                                                    // Check if extracted name is a phone number - if so, skip contact matching
+                                                    val phoneNumberPattern = Regex("\\b\\d{10,15}\\b")
+                                                    if (phoneNumberPattern.matches(extractedName)) {
+                                                        withContext(Dispatchers.Main) {
+                                                            printMessage("\nIntent: PhoneAction\n")
+                                                            printMessage("Phone number detected: '$extractedName'\n")
+                                                            printMessage("Skipping contact matching - using phone number directly\n")
+                                                            printMessage("\n" + "=".repeat(60) + "\n")
+                                                            printMessage("✓ PHONE NUMBER DIALING\n")
+                                                            printMessage("Number: $extractedName\n")
+                                                            printMessage("=".repeat(60) + "\n")
+                                                        }
+                                                        // Continue with phone number in slots - no contact matching needed
+                                                    } else {
+                                                        withContext(Dispatchers.Main) {
+                                                            printMessage("\nIntent: PhoneAction\n")
+                                                            printMessage("Extracted contact name: '$extractedName'\n")
+                                                            printMessage("\nStarting contact matching...\n")
+                                                        }
+                                                        
+                                                        val matchResult = contactMatcher.matchContact(extractedName)
+                                                        
+                                                        if (matchResult.matchedName != null) {
+                                                            // Update the slot with the matched contact name
+                                                            updatedSlots["contact"] = matchResult.matchedName
+                                                            updatedSlots["match_confidence"] = matchResult.confidence
+                                                            updatedSlots["match_type"] = matchResult.matchType.name
+                                                            
+                                                            withContext(Dispatchers.Main) {
+                                                                // Update the displayed slots with the matched full contact name
+                                                                intentSlots = updatedSlots
+                                                                
+                                                                printMessage("\n" + "=".repeat(60) + "\n")
+                                                                printMessage("✓ MATCH FOUND!\n")
+                                                                printMessage("Transcribed: '$extractedName'\n")
+                                                                printMessage("Matched Contact: ${matchResult.matchedName}\n")
+                                                                printMessage("Match Type: ${matchResult.matchType.name}\n")
+                                                                printMessage("Confidence: ${String.format("%.1f", matchResult.confidence)}%\n")
+                                                                printMessage("=".repeat(60) + "\n")
+                                                            }
+                                                        } else {
+                                                            // Contact not found - reset transcript to original
+                                                            withContext(Dispatchers.Main) {
+                                                                currentTranscript = result.trim()  // Show original transcription
+                                                                currentIntent = "Contact not found in your list"
+                                                                intentConfidence = 0f
+                                                                intentSlots = emptyMap()
+                                                                intentProcessingTime = ""
+                                                                printMessage("\n" + "=".repeat(60) + "\n")
+                                                                printMessage("✗ NO MATCH FOUND\n")
+                                                                printMessage("'$extractedName' is not in your contact list\n")
+                                                                printMessage("All matches were below 65% confidence threshold\n")
+                                                                printMessage("=".repeat(60) + "\n")
+                                                            }
+                                                            return@launch
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            
+                                            val slotsJson = JSONObject(updatedSlots as Map<*, *>).toString()
                                             
                                             // Check if required slots are satisfied for this specific intent and text
-                                            val hasRequiredSlots = slotExtractor.areRequiredSlotsSatisfied(intentResult, slotResult.slots, result.trim())
+                                            val hasRequiredSlots = slotExtractor.areRequiredSlotsSatisfied(intentResult, updatedSlots, result.trim())
                                             
                                             if (!hasRequiredSlots) {
                                                 withContext(Dispatchers.Main) {
@@ -594,6 +701,11 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                                     printMessage("Sorry, couldn't get you, please try again\n")
                                                 }
                                             } else {
+                                                // Update the displayed slots with updatedSlots (includes matched contact if applicable)
+                                                withContext(Dispatchers.Main) {
+                                                    intentSlots = updatedSlots
+                                                }
+                                                
                                                 // Save files with intent and slots information
                                                 val audioFile = saveAudioToFile(audioChunk, timestamp)
                                                 audioFile?.let { file ->

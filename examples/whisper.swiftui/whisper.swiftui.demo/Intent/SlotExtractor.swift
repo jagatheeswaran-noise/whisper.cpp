@@ -2072,14 +2072,49 @@ class SlotExtractor {
                 
                 if let match = matches.first, match.numberOfRanges > 1 {
                     let nameRange = Range(match.range(at: 1), in: matchedText)!
-                    let name = String(matchedText[nameRange]).trimmingCharacters(in: .whitespacesAndNewlines)
+                    let extractedName = String(matchedText[nameRange]).trimmingCharacters(in: .whitespacesAndNewlines)
                     
-                    // Validate extracted name
-                    if !name.isEmpty && 
-                       name.count >= 2 && 
-                       name.count <= 30 &&
-                       !["the", "my", "a", "an", "to", "for", "at", "in", "on", "with", "by", "from", "of", "and", "or", "but", "please", "pls", "hey", "hi", "hello", "yo", "now", "today", "tomorrow", "yesterday", "later", "soon", "quickly", "slowly", "again", "back", "home", "work", "office", "number", "phone", "mobile", "cell", "contact", "person", "friend", "family", "someone", "anybody", "anyone", "somebody", "nobody", "everyone", "everybody"].contains(name.lowercased()) {
-                        return name
+                    // Check if it's a phone number - if so, return directly
+                    let phoneNumberRegex = try! NSRegularExpression(pattern: "\\b\\d{10,15}\\b", options: [])
+                    if phoneNumberRegex.firstMatch(in: extractedName, options: [], range: NSRange(location: 0, length: extractedName.count)) != nil {
+                        return extractedName
+                    }
+                    
+                    // Clean up the extracted name (remove common stop words and punctuation at the beginning)
+                    var cleanedName = extractedName
+                    
+                    // Remove prefixes
+                    if let prefixRegex = try? NSRegularExpression(pattern: "^(?:to|my|the|a|an)\\s+", options: [.caseInsensitive]) {
+                        let range = NSRange(cleanedName.startIndex..., in: cleanedName)
+                        cleanedName = prefixRegex.stringByReplacingMatches(in: cleanedName, options: [], range: range, withTemplate: "")
+                    }
+                    
+                    // Remove suffixes
+                    if let suffixRegex = try? NSRegularExpression(pattern: "\\s+(?:please|now|right\\s+now|immediately|asap|urgently)$", options: [.caseInsensitive]) {
+                        let range = NSRange(cleanedName.startIndex..., in: cleanedName)
+                        cleanedName = suffixRegex.stringByReplacingMatches(in: cleanedName, options: [], range: range, withTemplate: "")
+                    }
+                    
+                    // Keep alphanumeric and spaces
+                    if let punctRegex = try? NSRegularExpression(pattern: "[^a-zA-Z0-9\\s]", options: []) {
+                        let range = NSRange(cleanedName.startIndex..., in: cleanedName)
+                        cleanedName = punctRegex.stringByReplacingMatches(in: cleanedName, options: [], range: range, withTemplate: "")
+                    }
+                    
+                    cleanedName = cleanedName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    // Additional validation: make sure it's not just common words
+                    let commonWords: Set<String> = [
+                        "the", "a", "an", "to", "my", "please", "now", "today", "tomorrow", "here", "there",
+                        "this", "that", "these", "those", "is", "are", "was", "were", "be", "been", "being",
+                        "have", "has", "had", "do", "does", "did", "will", "would", "could", "should", "can",
+                        "may", "might", "must", "shall", "and", "or"
+                    ]
+                    
+                    if !cleanedName.isEmpty && 
+                       cleanedName.count > 1 && 
+                       !commonWords.contains(cleanedName.lowercased()) {
+                        return cleanedName
                     }
                 }
             }
