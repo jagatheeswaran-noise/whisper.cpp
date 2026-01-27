@@ -24442,5 +24442,3414 @@
       "period": "weekly",
       "unit": "count"
     }
+  },
+  {
+    "text": "turn on outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "open outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "start outdoor walking please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "please turn on outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "can you open outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "turn on indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "open indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "please start indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "start indoor running please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "could you turn on indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "turn on outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "open outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "begin outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "please open outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "can you start outdoor running please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "turn on strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "open strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "please turn on strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "start strength training please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "could you open strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "turn on outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "open outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "start outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "please turn on outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "can you open outdoor cycling please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "turn on indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "open indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "please start indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "start indoor cycling please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "could you turn on indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "turn on trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "open trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "begin trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "please turn on trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "can you start trail running please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "turn on core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "open core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "start core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "please open core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "could you turn on core training please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "turn on yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "open yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "please start yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "start yoga please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "can you turn on yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "turn on indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "open indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "begin indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "please turn on indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "could you open indoor fitness please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "turn on boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "open boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "start boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "please open boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "can you turn on boxing please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "turn on tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "open tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "please start tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "start tennis please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "could you turn on tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "turn on badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "open badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "begin badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "please turn on badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "can you open badminton please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "turn on swimming",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "open swimming",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "start swimming please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "please turn on swimming",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "could you open swimming",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "turn on pilates",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "open pilates",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "begin pilates",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "please start pilates",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "can you turn on pilates please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "turn on hiking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "open hiking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "start hiking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "please turn on hiking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "could you open hiking please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "turn on rowing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "open rowing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "please start rowing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "start rowing please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "can you turn on rowing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "turn on elliptical",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "open elliptical",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "begin elliptical",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "please turn on elliptical",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "could you open elliptical please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "turn on stretching",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "open stretching",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "start stretching",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "please open stretching",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "can you turn on stretching please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "turn on dancing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "open dancing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "please start dancing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "start dancing please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "could you turn on dancing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "turn on martial arts",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "open martial arts",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "begin martial arts",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "please turn on martial arts",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "can you open martial arts please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "turn on soccer",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "open soccer",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "start soccer",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "please turn on soccer",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "could you open soccer please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "turn on basketball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "open basketball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "please start basketball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "start basketball please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "can you turn on basketball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "turn on golf",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "open golf",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "begin golf",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "please turn on golf",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "could you open golf please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "turn on cricket",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "open cricket",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "start cricket",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "please open cricket",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "can you turn on cricket please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "turn on skating",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "open skating",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "please start skating",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "start skating please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "could you turn on skating",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "turn on volleyball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "open volleyball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "begin volleyball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "please turn on volleyball",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "can you open volleyball please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "turn on table tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "open table tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "start table tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "please turn on table tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "could you open table tennis please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "turn on squash",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "open squash",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "please start squash",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "start squash please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "can you turn on squash",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "lets do outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "lets start indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "lets do outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "lets begin strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "lets start outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "lets go indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "lets do trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "lets start core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "lets begin yoga session",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "lets start indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "lets do boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "lets play tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "lets play badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "begin outdoor walking activity",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "initiate indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "initiate outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "initiate strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "begin outdoor cycling session",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "initiate indoor cycling workout",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "begin trail running activity",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "initiate core training session",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "initiate yoga workout",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "begin indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "initiate boxing training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "begin tennis match",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "initiate badminton game",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "could you please turn on outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "would you open indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "could you please start outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "would you turn on strength training please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "could you please open outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "would you start indoor cycling please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "could you please turn on trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "would you open core training please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "could you please begin yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "would you turn on indoor fitness please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "could you please start boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "would you open tennis please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "could you please turn on badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "i want to start outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "i want to do indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "i want to begin outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "i want to start strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "i want to do outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "i want to begin indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "i want to start trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "i want to do core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "i want to begin yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "i want to start indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "i want to do boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "i want to play tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "i want to play badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "i would like to start outdoor walking please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "i would like to do indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "i would like to begin outdoor running please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "i would like to start strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "i would like to do outdoor cycling please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "i would like to begin indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "start tracking outdoor walking please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "begin tracking indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "start tracking outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "begin tracking strength training please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "start tracking outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "begin tracking indoor cycling please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "start tracking trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "begin tracking core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "start tracking yoga please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "begin tracking indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "start tracking boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "begin tracking tennis please",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "start tracking badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "go for outdoor walking",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "go for indoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "go for outdoor running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "go for strength training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "go for outdoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "go for indoor cycling",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "go for trail running",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "go for core training",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "go for yoga",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "go for indoor fitness",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "go for boxing",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "go for tennis",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "go for badminton",
+    "intent": "StartActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "turn off outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "close outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "stop outdoor walking please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "please turn off outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "can you close outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "turn off indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "close indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "please stop indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "stop indoor running please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "could you turn off indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "turn off outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "close outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "end outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "please close outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "can you stop outdoor running please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "turn off strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "close strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "please turn off strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "stop strength training please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "could you close strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "turn off outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "close outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "stop outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "please turn off outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "can you close outdoor cycling please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "turn off indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "close indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "please stop indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "stop indoor cycling please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "could you turn off indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "turn off trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "close trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "end trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "please turn off trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "can you stop trail running please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "turn off core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "close core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "stop core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "please close core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "could you turn off core training please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "turn off yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "close yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "please stop yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "stop yoga please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "can you turn off yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "turn off indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "close indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "end indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "please turn off indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "could you close indoor fitness please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "turn off boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "close boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "stop boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "please close boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "can you turn off boxing please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "turn off tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "close tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "please stop tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "stop tennis please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "could you turn off tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "turn off badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "close badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "end badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "please turn off badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "can you close badminton please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "turn off swimming",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "close swimming",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "stop swimming please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "please turn off swimming",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "could you close swimming",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "turn off pilates",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "close pilates",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "end pilates",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "please stop pilates",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "can you turn off pilates please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "turn off hiking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "close hiking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "stop hiking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "please turn off hiking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "could you close hiking please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "turn off rowing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "close rowing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "please stop rowing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "stop rowing please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "can you turn off rowing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "turn off elliptical",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "close elliptical",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "end elliptical",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "please turn off elliptical",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "could you close elliptical please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "turn off stretching",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "close stretching",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "stop stretching",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "please close stretching",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "can you turn off stretching please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "turn off dancing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "close dancing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "please stop dancing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "stop dancing please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "could you turn off dancing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "turn off martial arts",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "close martial arts",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "end martial arts",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "please turn off martial arts",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "can you close martial arts please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "turn off soccer",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "close soccer",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "stop soccer",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "please turn off soccer",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "could you close soccer please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "turn off basketball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "close basketball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "please stop basketball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "stop basketball please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "can you turn off basketball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "turn off golf",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "close golf",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "end golf",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "please turn off golf",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "could you close golf please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "turn off cricket",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "close cricket",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "stop cricket",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "please close cricket",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "can you turn off cricket please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "turn off skating",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "close skating",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "please stop skating",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "stop skating please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "could you turn off skating",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "turn off volleyball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "close volleyball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "end volleyball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "please turn off volleyball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "can you close volleyball please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "turn off table tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "close table tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "stop table tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "please turn off table tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "could you close table tennis please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "turn off squash",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "close squash",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "please stop squash",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "stop squash please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "can you turn off squash",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "finish outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "terminate indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "cancel outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "finish strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "terminate outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "cancel indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "finish trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "terminate core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "cancel yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "finish indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "terminate boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "cancel tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "finish badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "terminate swimming",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "swimming"
+    }
+  },
+  {
+    "text": "cancel pilates",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "pilates"
+    }
+  },
+  {
+    "text": "finish hiking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "hiking"
+    }
+  },
+  {
+    "text": "terminate rowing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "rowing"
+    }
+  },
+  {
+    "text": "cancel elliptical",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "elliptical"
+    }
+  },
+  {
+    "text": "finish stretching",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "stretching"
+    }
+  },
+  {
+    "text": "terminate dancing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "dancing"
+    }
+  },
+  {
+    "text": "cancel martial arts",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "martial arts"
+    }
+  },
+  {
+    "text": "finish soccer",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "soccer"
+    }
+  },
+  {
+    "text": "terminate basketball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "basketball"
+    }
+  },
+  {
+    "text": "cancel golf",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "golf"
+    }
+  },
+  {
+    "text": "finish cricket",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "cricket"
+    }
+  },
+  {
+    "text": "terminate skating",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "skating"
+    }
+  },
+  {
+    "text": "cancel volleyball",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "volleyball"
+    }
+  },
+  {
+    "text": "finish table tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "table tennis"
+    }
+  },
+  {
+    "text": "terminate squash",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "squash"
+    }
+  },
+  {
+    "text": "lets stop outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "lets end indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "lets finish outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "lets close strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "lets stop outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "lets end indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "lets finish trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "lets stop core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "lets end yoga session",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "lets finish indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "lets stop boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "lets end tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "lets finish badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "end outdoor walking activity",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "terminate indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "finish outdoor running workout",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "end strength training session",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "terminate outdoor cycling session",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "finish indoor cycling workout",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "end trail running activity",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "terminate core training session",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "finish yoga workout",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "end indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "terminate boxing training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "finish tennis match",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "end badminton game",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "could you please turn off outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "would you close indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "could you please stop outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "would you turn off strength training please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "could you please close outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "would you stop indoor cycling please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "could you please turn off trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "would you close core training please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "could you please end yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "would you turn off indoor fitness please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "could you please stop boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "would you close tennis please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "could you please turn off badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "i want to stop outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "i want to end indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "i want to finish outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "i want to stop strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "i want to end outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "i want to finish indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "i want to stop trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "i want to end core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "i want to finish yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "i want to stop indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "i want to end boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "i want to finish tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "i want to stop badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "i would like to stop outdoor walking please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "i would like to end indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "i would like to finish outdoor running please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "i would like to stop strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "i would like to end outdoor cycling please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "i would like to finish indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "stop tracking outdoor walking please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "end tracking indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "stop tracking outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "end tracking strength training please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "stop tracking outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "end tracking indoor cycling please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "stop tracking trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "end tracking core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "stop tracking yoga please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "end tracking indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "stop tracking boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "end tracking tennis please",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "stop tracking badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
+  },
+  {
+    "text": "done with outdoor walking",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor walking"
+    }
+  },
+  {
+    "text": "done with indoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor running"
+    }
+  },
+  {
+    "text": "done with outdoor running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor running"
+    }
+  },
+  {
+    "text": "done with strength training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "strength training"
+    }
+  },
+  {
+    "text": "done with outdoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "outdoor cycling"
+    }
+  },
+  {
+    "text": "done with indoor cycling",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor cycling"
+    }
+  },
+  {
+    "text": "done with trail running",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "trail running"
+    }
+  },
+  {
+    "text": "done with core training",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "core training"
+    }
+  },
+  {
+    "text": "done with yoga",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "yoga"
+    }
+  },
+  {
+    "text": "done with indoor fitness",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "indoor fitness"
+    }
+  },
+  {
+    "text": "done with boxing",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "boxing"
+    }
+  },
+  {
+    "text": "done with tennis",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "tennis"
+    }
+  },
+  {
+    "text": "done with badminton",
+    "intent": "StopActivity",
+    "slots": {
+      "activity": "badminton"
+    }
   }
 ]
