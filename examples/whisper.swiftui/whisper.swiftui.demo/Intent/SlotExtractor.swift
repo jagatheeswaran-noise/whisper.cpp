@@ -2075,7 +2075,7 @@ class SlotExtractor {
                     let extractedName = String(matchedText[nameRange]).trimmingCharacters(in: .whitespacesAndNewlines)
                     
                     // Check if it's a phone number - if so, return directly
-                    let phoneNumberRegex = try! NSRegularExpression(pattern: "\\b\\d{10,15}\\b", options: [])
+                    let phoneNumberRegex = try! NSRegularExpression(pattern: "\\b\\d{1,15}\\b", options: [])
                     if phoneNumberRegex.firstMatch(in: extractedName, options: [], range: NSRange(location: 0, length: extractedName.count)) != nil {
                         return extractedName
                     }
@@ -2125,7 +2125,7 @@ class SlotExtractor {
             "\\b(\\d{3}[-.]?\\d{3}[-.]?\\d{4})\\b",
             "\\b(\\(\\d{3}\\)\\s?\\d{3}[-.]?\\d{4})\\b",
             "\\b(\\+\\d{1,3}\\s?\\d{3,4}\\s?\\d{3,4}\\s?\\d{3,4})\\b",
-            "\\b(\\d{10,15})\\b",
+            "\\b(\\d{1,15})\\b",
             "\\b(?:number|phone|mobile|cell)\\s+(\\d{3}[-.]?\\d{3}[-.]?\\d{4})\\b",
             "\\b(?:number|phone|mobile|cell)\\s+(\\(\\d{3}\\)\\s?\\d{3}[-.]?\\d{4})\\b",
             "\\b(?:call|dial|phone)\\s+(\\d{3}[-.]?\\d{3}[-.]?\\d{4})\\b",
@@ -2135,7 +2135,7 @@ class SlotExtractor {
         for pattern in phoneNumberPatterns {
             if let range = text.range(of: pattern, options: .regularExpression) {
                 let matchedText = String(text[range])
-                let matches = try! NSRegularExpression(pattern: "(\\d{3}[-.]?\\d{3}[-.]?\\d{4}|\\(\\d{3}\\)\\s?\\d{3}[-.]?\\d{4}|\\+\\d{1,3}\\s?\\d{3,4}\\s?\\d{3,4}\\s?\\d{3,4}|\\d{10,15})", options: []).matches(in: matchedText, options: [], range: NSRange(location: 0, length: matchedText.count))
+                let matches = try! NSRegularExpression(pattern: "(\\d{3}[-.]?\\d{3}[-.]?\\d{4}|\\(\\d{3}\\)\\s?\\d{3}[-.]?\\d{4}|\\+\\d{1,3}\\s?\\d{3,4}\\s?\\d{3,4}\\s?\\d{3,4}|\\d{1,15})", options: []).matches(in: matchedText, options: [], range: NSRange(location: 0, length: matchedText.count))
                 
                 if let match = matches.first {
                     let numberRange = Range(match.range, in: matchedText)!

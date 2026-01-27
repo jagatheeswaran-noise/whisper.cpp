@@ -2027,7 +2027,7 @@ class SlotExtractor {
                 val extractedName = match.groupValues[1].trim()
                 
                 // Check if the extracted text is a phone number
-                val phoneNumberPattern = "\\b\\d{10,15}\\b".toRegex()
+                val phoneNumberPattern = "\\b\\d{1,15}\\b".toRegex()
                 if (phoneNumberPattern.matches(extractedName)) {
                     return extractedName // Return the phone number directly
                 }
@@ -2057,7 +2057,7 @@ class SlotExtractor {
         // Additional pattern specifically for phone numbers with common formats
         val phoneNumberPatterns = listOf(
             // Pattern for standalone phone numbers (10-15 digits) - updated to handle "back" modifier
-            "(?:call|calling|phone|dial|dialing|ring|ringing|contact|reach|message|messaging|text|texting|sms)\\s+(?:back\\s+)?(\\d{10,15})\\b",
+            "(?:call|calling|phone|dial|dialing|ring|ringing|contact|reach|message|messaging|text|texting|sms)\\s+(?:back\\s+)?(\\d{1,15})\\b",
             
             // Pattern for phone numbers with separators (spaces, hyphens, dots)
             "(?:call|calling|phone|dial|dialing|ring|ringing|contact|reach|message|messaging|text|texting|sms)\\s+(?:back\\s+)?(\\d{3,4}[\\s\\-\\.]{0,1}\\d{3,4}[\\s\\-\\.]{0,1}\\d{4,6})\\b",

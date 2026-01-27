@@ -628,7 +628,7 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                                 val extractedName = updatedSlots["contact"] as? String
                                                 if (!extractedName.isNullOrBlank()) {
                                                     // Check if extracted name is a phone number - if so, skip contact matching
-                                                    val phoneNumberPattern = Regex("\\b\\d{10,15}\\b")
+                                                    val phoneNumberPattern = Regex("\\b\\d{1,15}\\b")
                                                     if (phoneNumberPattern.matches(extractedName)) {
                                                         withContext(Dispatchers.Main) {
                                                             printMessage("\nIntent: PhoneAction\n")
