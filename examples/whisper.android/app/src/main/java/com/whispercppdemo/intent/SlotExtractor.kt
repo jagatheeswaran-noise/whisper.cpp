@@ -2326,7 +2326,17 @@ class SlotExtractor {
                     }
                 }
                 if (!slots.containsKey("state")) {
-                    val state = extractState(text)
+                    // Extract feature first and remove it from text before extracting state
+                    // to avoid feature keywords (like "wake up" in "raise to wake") 
+                    // from interfering with state detection
+                    val featureName = slots["feature"] as? String ?: extractFeature(text)
+                    val textForState = if (featureName != null) {
+                        // Remove the feature name from the text to avoid false matches
+                        text.replace(featureName.toRegex(RegexOption.IGNORE_CASE), "")
+                    } else {
+                        text
+                    }
+                    val state = extractState(textForState)
                     if (state != null) {
                         slots["state"] = state
                     }

@@ -2536,7 +2536,18 @@ class SlotExtractor {
                 }
             }
             if slots["state"] == nil {
-                if let state = extractState(text: text) {
+                // Extract feature first and remove it from text before extracting state
+                // to avoid feature keywords (like "wake up" in "raise to wake")
+                // from interfering with state detection
+                let featureName = (slots["feature"] as? String) ?? extractFeature(text: text)
+                let textForState: String
+                if let featureName = featureName {
+                    // Remove the feature name from the text to avoid false matches
+                    textForState = text.replacingOccurrences(of: featureName, with: "", options: .caseInsensitive)
+                } else {
+                    textForState = text
+                }
+                if let state = extractState(text: textForState) {
                     slots["state"] = state
                 }
             }
