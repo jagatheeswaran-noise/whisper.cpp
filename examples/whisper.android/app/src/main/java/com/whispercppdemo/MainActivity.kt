@@ -13,6 +13,8 @@ import com.whispercppdemo.intent.IntentTestScreen
 import com.whispercppdemo.intent.IntentTestViewModel
 import com.whispercppdemo.ui.main.MainScreen
 import com.whispercppdemo.ui.main.MainScreenViewModel
+import com.whispercppdemo.ui.transcription.TranscriptionScreen
+import com.whispercppdemo.ui.transcription.TranscriptionViewModel
 import com.whispercppdemo.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,7 +39,8 @@ fun WhisperAppWithTabs(mainViewModel: MainScreenViewModel) {
     
     val tabs = listOf(
         "ASR & Intent",
-        "Intent Test"
+        "Intent Test",
+        "Transcription"
     )
     
     Column(
@@ -60,6 +63,12 @@ fun WhisperAppWithTabs(mainViewModel: MainScreenViewModel) {
             1 -> {
                 val intentViewModel: IntentTestViewModel = viewModel()
                 IntentTestScreen(intentViewModel)
+            }
+            2 -> {
+                val transcriptionViewModel: TranscriptionViewModel = viewModel(
+                    factory = TranscriptionViewModel.factory(mainViewModel.getApplication())
+                )
+                TranscriptionScreen(transcriptionViewModel)
             }
         }
     }

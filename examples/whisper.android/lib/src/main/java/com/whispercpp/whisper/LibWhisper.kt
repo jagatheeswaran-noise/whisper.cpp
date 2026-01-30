@@ -42,6 +42,39 @@ class WhisperContext private constructor(private var ptr: Long) {
         }
     }
 
+    suspend fun transcribeDataWithWordTimestamps(data: FloatArray, prompt: String? = null): String = withContext(scope.coroutineContext) {
+        require(ptr != 0L)
+        val numThreads = WhisperCpuConfig.preferredThreadCount
+        Log.d(LOG_TAG, "Selecting $numThreads threads with word-level timestamps")
+        
+        if (prompt != null) {
+            Log.d(LOG_TAG, "Using prompt: $prompt")
+            WhisperLib.fullTranscribeWithPrompt(ptr, numThreads, data, prompt)
+        } else {
+            WhisperLib.fullTranscribe(ptr, numThreads, data)
+        }
+        
+        val segmentCount = WhisperLib.getTextSegmentCount(ptr)
+        return@withContext buildString {
+            for (segmentIdx in 0 until segmentCount) {
+                val tokenCount = WhisperLib.getTextSegmentTokenCount(ptr, segmentIdx)
+                
+                for (tokenIdx in 0 until tokenCount) {
+                    val tokenText = WhisperLib.getTokenText(ptr, segmentIdx, tokenIdx)
+                    val t0 = WhisperLib.getTokenTimestampT0(ptr, segmentIdx, tokenIdx)
+                    val t1 = WhisperLib.getTokenTimestampT1(ptr, segmentIdx, tokenIdx)
+                    
+                    // Only add tokens that have text (skip special tokens)
+                    if (tokenText.isNotBlank()) {
+                        append("[${toTimestamp(t0)} -> ${toTimestamp(t1)}] $tokenText")
+                        if (tokenIdx < tokenCount - 1) append(" ")
+                    }
+                }
+                append("\n")
+            }
+        }
+    }
+
     suspend fun benchMemory(nthreads: Int): String = withContext(scope.coroutineContext) {
         return@withContext WhisperLib.benchMemcpy(nthreads)
     }
@@ -147,6 +180,10 @@ private class WhisperLib {
         external fun getTextSegment(contextPtr: Long, index: Int): String
         external fun getTextSegmentT0(contextPtr: Long, index: Int): Long
         external fun getTextSegmentT1(contextPtr: Long, index: Int): Long
+        external fun getTextSegmentTokenCount(contextPtr: Long, segmentIndex: Int): Int
+        external fun getTokenText(contextPtr: Long, segmentIndex: Int, tokenIndex: Int): String
+        external fun getTokenTimestampT0(contextPtr: Long, segmentIndex: Int, tokenIndex: Int): Long
+        external fun getTokenTimestampT1(contextPtr: Long, segmentIndex: Int, tokenIndex: Int): Long
         external fun getSystemInfo(): String
         external fun benchMemcpy(nthread: Int): String
         external fun benchGgmlMulMat(nthread: Int): String
