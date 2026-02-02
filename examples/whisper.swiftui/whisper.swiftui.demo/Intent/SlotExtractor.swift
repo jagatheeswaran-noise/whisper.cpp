@@ -279,16 +279,18 @@ class SlotExtractor {
         ],
         "deep sleep": [
             "deep sleep", "deep sleeping", "deep slumber", 
-            "deep rest", "deep phase", "deep stage", "stage 3", "stage 4",
+            "deep sleep phase", "stage 3", "stage 4", "stage three", "stage four",
             "slow wave sleep", "sws", "restorative sleep", "deep sleep time",
             "deep sleep duration", "deep sleep hours", "deep sleep stage",
-            "profound sleep", "heavy sleep", "sound sleep"
+            "profound sleep", "heavy sleep", "sound sleep", "deep sleep period"
         ],
         "spo2": [
-            "spo2", "oxygen", "blood oxygen", "o2", "saturation", "oxygen saturation",
-            "oxygen level", "oxygen levels", "o2 sat", "blood o2", "oxygen sat",
-            "pulse ox", "pulse oximetry", "oximeter", "oxygen reading", "o2 level",
-            "respiratory", "breathing", "blood oxygen level"
+            "spo2", "sp o2", "sp o 2", "s p o 2", "s p o2", "sp2", "sp 2", "s p 2",
+            "oxygen", "blood oxygen", "o2", "o 2", "saturation", "oxygen saturation",
+            "oxygen level", "oxygen levels", "o2 sat", "o 2 sat", "blood o2", "blood o 2",
+            "oxygen sat", "pulse ox", "pulse oximetry", "oximeter", "oxygen reading",
+            "o2 level", "o 2 level", "respiratory", "breathing", "blood oxygen level",
+            "oxygen sensor", "blood oxygen saturation", "arterial oxygen"
         ],
         "weight": [
             "weight", "weigh", "kg", "pounds", "lbs", "kilogram", "kilograms", "lb",
@@ -309,6 +311,15 @@ class SlotExtractor {
             "upright", "upright time", "standing duration", "stand duration",
             "on feet", "on my feet", "standing up", "stood up", "vertical",
             "standing activity", "stand activity", "standing ring", "stand ring"
+        ],
+        "active hours": [
+            "active hours", "active hour", "activity hours", "activity hour",
+            "hours active", "hour active", "active time", "activity time",
+            "time active", "hours of activity", "hours of movement",
+            "movement hours", "movement time", "time spent active", "active duration",
+            "activity duration", "physical activity time", "physical activity hours",
+            "daily active time", "total active time", "active minutes",
+            "active periods", "time moving", "moving time", "how active"
         ],
         "vo2": [
             "vo2", "vo2 max", "vo2max", "v o2", "v o2 max", "vo 2", "vo 2 max",
@@ -429,6 +440,7 @@ class SlotExtractor {
     private let weightRegex = try! NSRegularExpression(pattern: "\\b(?:weight|weigh|weighing|weighed|kg|kilogram|kilograms|pound|pounds|lbs|lb|body mass|bmi|body weight|mass|scale|heavy|light|stone|gram|grams|ounce|ounces|oz)\\b", options: [.caseInsensitive])
     private let stressRegex = try! NSRegularExpression(pattern: "\\b(?:stress|stressed|stressful|anxiety|anxious|tension|tense|worried|worry|worrying|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|mental health|relaxation|relax|calm|peace|peaceful)\\b", options: [.caseInsensitive])
     private let standingRegex = try! NSRegularExpression(pattern: "\\b(?:standing|stand|stood|upright|vertical|on feet|on my feet|stand hours|standing hours|stand time|standing time|stand goal|standing goal|stand ring|standing ring|stand activity|standing activity|stand up|stood up)\\b", options: [.caseInsensitive])
+    private let activeHoursRegex = try! NSRegularExpression(pattern: "\\b(?:active\\s+hours?|activity\\s+hours?|hours?\\s+active|active\\s+time|activity\\s+time|time\\s+active|activar'?s?|activars|hours?\\s+of\\s+activity|hours?\\s+of\\s+movement|movement\\s+hours?|time\\s+spent\\s+active|active\\s+duration|activity\\s+duration|physical\\s+activity\\s+(?:time|hours?)|daily\\s+active\\s+time|total\\s+active\\s+time|time\\s+moving|moving\\s+time)\\b", options: [.caseInsensitive])
     private let awakeRegex = try! NSRegularExpression(pattern: "\\b(?:awake|waking|woke|awaken|awakened|time\\s+awake|hours\\s+awake|awake\\s+time|waking\\s+time|wake\\s+time|time\\s+spent\\s+awake|time\\s+spent\\s+waking)\\b", options: [.caseInsensitive])
     private let vo2Regex = try! NSRegularExpression(pattern: "\\b(?:vo2|vo2\\s*max|vo2max|v\\s*o\\s*2|v\\s*o\\s*2\\s*max|vo\\s*2|vo\\s*2\\s*max|vo\\s*two|vo\\s*two\\s*max|v\\s*o\\s*two|aerobic\\s+capacity|aerobic\\s+fitness|cardio\\s+fitness|cardiovascular\\s+fitness|max\\s+oxygen|maximum\\s+oxygen|oxygen\\s+uptake|cardio\\s+capacity|endurance\\s+capacity|fitness\\s+level|aerobic\\s+power|oxygen\\s+capacity|cardiorespiratory)\\b", options: [.caseInsensitive])
     private let heartRateUnitRegex = try! NSRegularExpression(pattern: "\\b(?:heart\\s+rate|pulse|hr)\\b", options: [.caseInsensitive])
@@ -647,6 +659,11 @@ class SlotExtractor {
         // Light Sleep context - check BEFORE general sleep
         if lightSleepRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
             return "light sleep"
+        }
+        
+        // Active Hours context - check BEFORE deep sleep to avoid misidentification
+        if activeHoursRegex.numberOfMatches(in: originalText, options: [], range: NSRange(location: 0, length: originalText.count)) > 0 {
+            return "active hours"
         }
 
         // Deep Sleep context - check BEFORE general sleep
@@ -1474,7 +1491,7 @@ class SlotExtractor {
             "volume": "\\b(?:volume|sound\\s+level|sound\\s+volume|audio\\s+level|audio\\s+volume|loudness|loud|quiet|soft|sound|audio|speaker\\s+volume|media\\s+volume|ringtone\\s+volume|notification\\s+volume|alarm\\s+volume|call\\s+volume|ringer|sound\\s+output|audio\\s+output|volume\\s+level)\\b",
             "torch": "\\b(?:torch|flashlight|flash\\s+light|led\\s+light|led\\s+torch|camera\\s+flash|light|lamp|lantern|beam|illumination|bright\\s+light|phone\\s+light|mobile\\s+light|emergency\\s+light|torch\\s+light|strobe|strobe\\s+light|spotlight|searchlight|headlight|flash\\s+lamp|portable\\s+light|hand\\s+light|led\\s+flash|camera\\s+light|phone\\s+torch|device\\s+light|built-in\\s+light|integrated\\s+light)\\b",
             "autoHR": "\\b(?:auto\\s+hr|auto\\s+heart\\s+rate|automatic\\s+heart\\s+rate|auto\\s+heart|continuous\\s+heart\\s+rate|continuous\\s+hr|always\\s+on\\s+heart\\s+rate|heart\\s+rate\\s+monitoring|hr\\s+monitoring|continuous\\s+heart\\s+monitoring|background\\s+heart\\s+rate|24\\s+7\\s+heart\\s+rate|heart\\s+rate\\s+tracking)\\b",
-            "autoSPo2": "\\b(?:auto\\s+spo2|auto\\s+sp\\s+o2|auto\\s+oxygen|automatic\\s+spo2|automatic\\s+oxygen|continuous\\s+spo2|continuous\\s+oxygen|always\\s+on\\s+spo2|spo2\\s+monitoring|oxygen\\s+monitoring|continuous\\s+oxygen\\s+monitoring|background\\s+spo2|24\\s+7\\s+spo2|spo2\\s+tracking|oxygen\\s+tracking)\\b",
+            "autoSPo2": "\\b(?:AutoSPO2|autoSPo2|autospo2|auto-spo2|auto-sp-o-2|auto-sp-o2|auto-s-p-o-2|auto(?:,?\\s+|,\\s*)spo2|auto(?:,?\\s+|,\\s*)sp\\s+o\\s*2|auto(?:,?\\s+|,\\s*)sp\\s*o\\s*2|auto(?:,?\\s+|,\\s*)s\\s+p\\s+o\\s+2|auto(?:,?\\s+|,\\s*)oxygen|automatic-spo2|automatic-sp-o-2|automatic-sp-o2|automatic(?:,?\\s+|,\\s*)spo2|automatic(?:,?\\s+|,\\s*)sp\\s+o\\s*2|automatic(?:,?\\s+|,\\s*)sp\\s*o\\s*2|automatic(?:,?\\s+|,\\s*)oxygen|continuous\\s+spo2|continuous\\s+sp\\s+o\\s*2|continuous\\s+sp\\s*o\\s*2|continuous\\s+oxygen|always\\s+on\\s+spo2|always\\s+on\\s+sp\\s+o\\s*2|spo2\\s+monitoring|sp\\s+o\\s*2\\s+monitoring|oxygen\\s+monitoring|continuous\\s+oxygen\\s+monitoring|background\\s+spo2|background\\s+sp\\s+o\\s*2|24\\s+7\\s+spo2|24\\s+7\\s+sp\\s+o\\s*2|spo2\\s+tracking|sp\\s+o\\s*2\\s+tracking|oxygen\\s+tracking|auto(?:,?\\s+|,\\s*)blood\\s+oxygen|automatic(?:,?\\s+|,\\s*)blood\\s+oxygen)\\b",
             "stress monitor": "\\b(?:stress\\s+monitor|stress\\s+monitoring|stress\\s+tracking|stress\\s+detection|auto\\s+stress|automatic\\s+stress|continuous\\s+stress|stress\\s+measurement|stress\\s+sensor|mental\\s+health\\s+monitoring|stress\\s+alert|stress\\s+warning)\\b",
             "sleep mode": "\\b(?:sleep\\s+mode|sleeping\\s+mode|night\\s+mode|bedtime\\s+mode|rest\\s+mode|sleep\\s+tracking\\s+mode|sleep\\s+monitoring|auto\\s+sleep|automatic\\s+sleep|sleep\\s+detection|sleep\\s+schedule|bedtime\\s+schedule|wind\\s+down|sleep\\s+routine)\\b",
             "sedentary alert": "\\b(?:sedentary\\s+alert|sedentary\\s+reminder|inactivity\\s+alert|inactivity\\s+reminder|move\\s+reminder|move\\s+alert|sitting\\s+alert|sitting\\s+reminder|activity\\s+reminder|get\\s+up\\s+reminder|stand\\s+up\\s+reminder|movement\\s+reminder|idle\\s+alert|lazy\\s+reminder)\\b",
@@ -2601,9 +2618,8 @@ class SlotExtractor {
             ],
             "deep sleep": [
                 "\\bdeep\\s+sleep\\b|\\bdeep\\s+sleeping\\b|\\bdeep\\s+slumber\\b",
-                "\\brem\\s+sleep\\b|\\brem\\b",
-                "\\bdeep\\s+(?:rest|phase|stage)\\b",
-                "\\b(?:stage\\s+)?(?:3|4|three|four)(?:\\s+sleep)?\\b",
+                "\\bdeep\\s+sleep\\s+(?:phase|stage)\\b",
+                "\\bstage\\s+(?:3|4|three|four)(?:\\s+sleep)?\\b",
                 "\\bslow\\s+wave\\s+sleep\\b|\\bsws\\b",
                 "\\brestorative\\s+sleep\\b",
                 "\\bhow\\s+(?:much|long|well).*deep\\s+sleep\\b",
