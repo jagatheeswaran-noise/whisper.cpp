@@ -126,6 +126,238 @@
     }
   },
   {
+    "text": "start, stop, watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "start, stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "stop, watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "start stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "start stopwatch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
+    "text": "stop stopwatch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "stop"
+    }
+  },
+  {
+    "text": "stop, stop, watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "stop"
+    }
+  },
+  {
+    "text": "stop, stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "stop"
+    }
+  },
+  {
+    "text": "stop stop watch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "timer_type": "stopwatch",
+      "action": "stop"
+    }
+  },
+  {
+    "text": "turn on music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "turn on the music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "turn music on",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "turn off music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "stop",
+      "target": "music"
+    }
+  },
+  {
+    "text": "turn off the music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "stop",
+      "target": "music"
+    }
+  },
+  {
+    "text": "turn music off",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "stop",
+      "target": "music"
+    }
+  },
+  {
+    "text": "switch on music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "switch off music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "stop",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start the music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start playing music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start my music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "begin music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "begin playing music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "commence music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start music playback",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "begin the music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
+    "text": "start up music",
+    "intent": "MediaAction",
+    "slots": {
+      "action": "play",
+      "target": "music"
+    }
+  },
+  {
     "text": "completed 35 minutes walking",
     "intent": "LogEvent",
     "slots": {
@@ -22421,7 +22653,7 @@
     "intent": "StartActivity",
     "slots": {
       "activity": "running"
-    } 
+    }
   },
   {
     "text": "how many steps I walked this week",

@@ -286,6 +286,7 @@ class SlotExtractor {
         ],
         "spo2": [
             "spo2", "sp o2", "sp o 2", "s p o 2", "s p o2", "sp2", "sp 2", "s p 2",
+            "spo to", "sp o to", "spo too", "sp o too", "s p o to", "s p o too",
             "oxygen", "blood oxygen", "o2", "o 2", "saturation", "oxygen saturation",
             "oxygen level", "oxygen levels", "o2 sat", "o 2 sat", "blood o2", "blood o 2",
             "oxygen sat", "pulse ox", "pulse oximetry", "oximeter", "oxygen reading",
@@ -607,6 +608,8 @@ class SlotExtractor {
             return extractPeriod(text: originalText)
         case "event_type":
             return extractEventType(text: originalText)
+        case "day":
+            return extractDay(text: originalText)
         case "message":
             return "Sorry, please say again"
         default:
@@ -751,6 +754,28 @@ class SlotExtractor {
         for (timeRef, pattern) in timePatterns {
             if text.range(of: pattern, options: .regularExpression) != nil {
                 return timeRef
+            }
+        }
+        
+        return nil
+    }
+    
+    private func extractDay(text: String) -> String? {
+        let dayPatterns: [String: String] = [
+            "today": "\\btoday\\b|\\bthis\\s+day\\b|\\btonight\\b|\\blater\\s+today\\b",
+            "tomorrow": "\\btomorrow\\b|\\btomorrow\\s+morning\\b|\\btomorrow\\s+afternoon\\b|\\btomorrow\\s+evening\\b|\\btomorrow\\s+night\\b|\\bnext\\s+day\\b|\\bthe\\s+day\\s+after\\b",
+            "monday": "\\bmonday\\b|\\bmon\\b(?!\\s*th)|\\bnext\\s+monday\\b|\\bthis\\s+monday\\b|\\bcoming\\s+monday\\b|\\bon\\s+monday\\b",
+            "tuesday": "\\btuesday\\b|\\btues\\b|\\btue\\b|\\bnext\\s+tuesday\\b|\\bthis\\s+tuesday\\b|\\bcoming\\s+tuesday\\b|\\bon\\s+tuesday\\b",
+            "wednesday": "\\bwednesday\\b|\\bwed\\b|\\bnext\\s+wednesday\\b|\\bthis\\s+wednesday\\b|\\bcoming\\s+wednesday\\b|\\bon\\s+wednesday\\b",
+            "thursday": "\\bthursday\\b|\\bthurs\\b|\\bthur\\b|\\bthu\\b|\\bnext\\s+thursday\\b|\\bthis\\s+thursday\\b|\\bcoming\\s+thursday\\b|\\bon\\s+thursday\\b",
+            "friday": "\\bfriday\\b|\\bfri\\b|\\bnext\\s+friday\\b|\\bthis\\s+friday\\b|\\bcoming\\s+friday\\b|\\bon\\s+friday\\b",
+            "saturday": "\\bsaturday\\b|\\bsat\\b|\\bnext\\s+saturday\\b|\\bthis\\s+saturday\\b|\\bcoming\\s+saturday\\b|\\bon\\s+saturday\\b",
+            "sunday": "\\bsunday\\b|\\bsun\\b|\\bnext\\s+sunday\\b|\\bthis\\s+sunday\\b|\\bcoming\\s+sunday\\b|\\bon\\s+sunday\\b"
+        ]
+        
+        for (day, pattern) in dayPatterns {
+            if text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil {
+                return day
             }
         }
         
@@ -1486,14 +1511,13 @@ class SlotExtractor {
         let features: [String: String] = [
             "do not disturb": "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
             "AOD": "\\b(?:AOD|aod|a\\.?o\\.?d\\.?|always\\s+on\\s+display|always-on\\s+display|always\\s+on|screen\\s+always\\s+on|display\\s+always\\s+on|persistent\\s+display|constant\\s+display|continuous\\s+display|keep\\s+screen\\s+on|screen\\s+stays\\s+on|display\\s+on|ambient\\s+display|glance\\s+screen|standby\\s+screen)\\b",
-            "raise to wake": "\\b(?:raise\\s+to\\s+wake|lift\\s+to\\s+wake|tap\\s+to\\s+wake|double\\s+tap\\s+to\\s+wake|touch\\s+to\\s+wake|wrist\\s+raise|raise\\s+wrist|lift\\s+wrist|wake\\s+on\\s+raise|wake\\s+on\\s+lift|wake\\s+on\\s+tap|wake\\s+on\\s+touch|pick\\s+up\\s+to\\s+wake|gesture\\s+wake|motion\\s+wake|tilt\\s+to\\s+wake|wake\\s+gesture|screen\\s+wake|auto\\s+wake|smart\\s+wake)\\b",
+            "raise to wake": "\\b(?:(?:raise|raised|race|rice)\\s+to\\s+wake|lift\\s+to\\s+wake|tap\\s+to\\s+wake|double\\s+tap\\s+to\\s+wake|touch\\s+to\\s+wake|wrist\\s+(?:raise|raised|race|rice)|(?:raise|raised|race|rice)\\s+wrist|lift\\s+wrist|wake\\s+on\\s+(?:raise|raised|race|rice)|wake\\s+on\\s+lift|wake\\s+on\\s+tap|wake\\s+on\\s+touch|pick\\s+up\\s+to\\s+wake|gesture\\s+wake|motion\\s+wake|tilt\\s+to\\s+wake|wake\\s+gesture|screen\\s+wake|auto\\s+wake|smart\\s+wake)\\b",
             "vibration": "\\b(?:vibration|vibrate|vibrating|haptic|haptics|buzz|buzzing|rumble|rumbling|tactile|tactile\\s+feedback|vibration\\s+feedback|motor|vibration\\s+motor|shake|shaking|pulse|pulsing|vibe|vibes|vibrate\\s+mode|silent\\s+vibrate|ring\\s+vibrate)\\b",
             "volume": "\\b(?:volume|sound\\s+level|sound\\s+volume|audio\\s+level|audio\\s+volume|loudness|loud|quiet|soft|sound|audio|speaker\\s+volume|media\\s+volume|ringtone\\s+volume|notification\\s+volume|alarm\\s+volume|call\\s+volume|ringer|sound\\s+output|audio\\s+output|volume\\s+level)\\b",
             "torch": "\\b(?:torch|flashlight|flash\\s+light|led\\s+light|led\\s+torch|camera\\s+flash|light|lamp|lantern|beam|illumination|bright\\s+light|phone\\s+light|mobile\\s+light|emergency\\s+light|torch\\s+light|strobe|strobe\\s+light|spotlight|searchlight|headlight|flash\\s+lamp|portable\\s+light|hand\\s+light|led\\s+flash|camera\\s+light|phone\\s+torch|device\\s+light|built-in\\s+light|integrated\\s+light)\\b",
-            "autoHR": "\\b(?:auto\\s+hr|auto\\s+heart\\s+rate|automatic\\s+heart\\s+rate|auto\\s+heart|continuous\\s+heart\\s+rate|continuous\\s+hr|always\\s+on\\s+heart\\s+rate|heart\\s+rate\\s+monitoring|hr\\s+monitoring|continuous\\s+heart\\s+monitoring|background\\s+heart\\s+rate|24\\s+7\\s+heart\\s+rate|heart\\s+rate\\s+tracking)\\b",
+            "autoHR": "\\b(?:auto\\s+hr|autoHR|autohr|auto\\s+heart\\s+rate|automatic\\s+heart\\s+rate|auto\\s+heart|continuous\\s+heart\\s+rate|continuous\\s+hr|always\\s+on\\s+heart\\s+rate|heart\\s+rate\\s+monitoring|hr\\s+monitoring|continuous\\s+heart\\s+monitoring|background\\s+heart\\s+rate|24\\s+7\\s+heart\\s+rate|heart\\s+rate\\s+tracking)\\b",
             "autoSPo2": "\\b(?:AutoSPO2|autoSPo2|autospo2|auto-spo2|auto-sp-o-2|auto-sp-o2|auto-s-p-o-2|auto(?:,?\\s+|,\\s*)spo2|auto(?:,?\\s+|,\\s*)sp\\s+o\\s*2|auto(?:,?\\s+|,\\s*)sp\\s*o\\s*2|auto(?:,?\\s+|,\\s*)s\\s+p\\s+o\\s+2|auto(?:,?\\s+|,\\s*)oxygen|automatic-spo2|automatic-sp-o-2|automatic-sp-o2|automatic(?:,?\\s+|,\\s*)spo2|automatic(?:,?\\s+|,\\s*)sp\\s+o\\s*2|automatic(?:,?\\s+|,\\s*)sp\\s*o\\s*2|automatic(?:,?\\s+|,\\s*)oxygen|continuous\\s+spo2|continuous\\s+sp\\s+o\\s*2|continuous\\s+sp\\s*o\\s*2|continuous\\s+oxygen|always\\s+on\\s+spo2|always\\s+on\\s+sp\\s+o\\s*2|spo2\\s+monitoring|sp\\s+o\\s*2\\s+monitoring|oxygen\\s+monitoring|continuous\\s+oxygen\\s+monitoring|background\\s+spo2|background\\s+sp\\s+o\\s*2|24\\s+7\\s+spo2|24\\s+7\\s+sp\\s+o\\s*2|spo2\\s+tracking|sp\\s+o\\s*2\\s+tracking|oxygen\\s+tracking|auto(?:,?\\s+|,\\s*)blood\\s+oxygen|automatic(?:,?\\s+|,\\s*)blood\\s+oxygen)\\b",
             "stress monitor": "\\b(?:stress\\s+monitor|stress\\s+monitoring|stress\\s+tracking|stress\\s+detection|auto\\s+stress|automatic\\s+stress|continuous\\s+stress|stress\\s+measurement|stress\\s+sensor|mental\\s+health\\s+monitoring|stress\\s+alert|stress\\s+warning)\\b",
-            "sleep mode": "\\b(?:sleep\\s+mode|sleeping\\s+mode|night\\s+mode|bedtime\\s+mode|rest\\s+mode|sleep\\s+tracking\\s+mode|sleep\\s+monitoring|auto\\s+sleep|automatic\\s+sleep|sleep\\s+detection|sleep\\s+schedule|bedtime\\s+schedule|wind\\s+down|sleep\\s+routine)\\b",
             "sedentary alert": "\\b(?:sedentary\\s+alert|sedentary\\s+reminder|inactivity\\s+alert|inactivity\\s+reminder|move\\s+reminder|move\\s+alert|sitting\\s+alert|sitting\\s+reminder|activity\\s+reminder|get\\s+up\\s+reminder|stand\\s+up\\s+reminder|movement\\s+reminder|idle\\s+alert|lazy\\s+reminder)\\b",
             "hydration alert": "\\b(?:hydration\\s+alert|hydration\\s+reminder|water\\s+reminder|water\\s+alert|drink\\s+reminder|drink\\s+alert|drink\\s+water\\s+reminder|fluid\\s+reminder|thirst\\s+reminder|water\\s+intake\\s+reminder|hydration\\s+notification|water\\s+notification|stay\\s+hydrated\\s+reminder)\\b"
         ]
@@ -1517,11 +1541,11 @@ class SlotExtractor {
             return "off"
         }
         
-        if text.range(of: "\\b(?:increase|increased|increasing|up|higher|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
+        if text.range(of: "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
             return "increase"
         }
         
-        if text.range(of: "\\b(?:decrease|decreased|decreasing|down|lower|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
+        if text.range(of: "\\b(?:decrease|decreased|decreasing|down|lower|low|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
             return "decrease"
         }
         
@@ -1529,6 +1553,20 @@ class SlotExtractor {
     }
     
     private func extractAction(text: String) -> String? {
+        // Special handling: if "start" appears before "stop" in the text, prioritize "start"
+        // This handles cases like "start stopwatch" misrecognized as "start, stop, watch" or "start stop watch"
+        let lowercaseText = text.lowercased()
+        if let startRange = lowercaseText.range(of: "start"),
+           let stopRange = lowercaseText.range(of: "stop"),
+           startRange.lowerBound < stopRange.lowerBound {
+            // Check if this looks like "start stopwatch" pattern (start appears before stop)
+            let endIndex = lowercaseText.index(stopRange.upperBound, offsetBy: 10, limitedBy: lowercaseText.endIndex) ?? lowercaseText.endIndex
+            let textBetween = String(lowercaseText[startRange.lowerBound..<endIndex])
+            if textBetween.range(of: "start[,\\s]+stop", options: .regularExpression) != nil {
+                return "start"
+            }
+        }
+        
         let actions: [String: String] = [
             "set": "\\b(?:set|setup|set\\s+up|configure|configuration|adjust|adjustment|change|modify|edit|customize|establish|define|specify|determine|fix|assign|allocate|program|preset|input|enter|put\\s+in|make\\s+it|arrange|organize|prepare)\\b",
             
@@ -1550,9 +1588,9 @@ class SlotExtractor {
 
             "pause": "\\b(?:pause|pausing|paused|hold|holding|held|freeze|freezing|frozen|stop\\s+temporarily|suspend|suspended|suspending|halt\\s+temporarily|break|breaking|broke|interrupt|interrupting|interrupted)\\b",
 
-            "increase": "\\b(?:increase|increased|increasing|up|higher|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
+            "increase": "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
 
-            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b",
+            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|low|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b",
 
             "skip_next": "\\b(?:skip\\s+(?:forward|next|ahead)|next\\s+(?:track|song|chapter|episode|video|clip)|forward\\s+(?:to\\s+next|one)|advance\\s+(?:to\\s+next|one)|go\\s+(?:to\\s+next|forward\\s+one)|jump\\s+(?:to\\s+next|forward)|fast\\s+forward\\s+(?:to\\s+next|one)|move\\s+(?:to\\s+next|forward)|switch\\s+(?:to\\s+next|forward))\\b",
 
@@ -1593,6 +1631,20 @@ class SlotExtractor {
     
     
     private func extractTimerAction(text: String) -> String? {
+        // Special handling: if "start" appears before "stop" in the text, prioritize "start"
+        // This handles cases like "start, stop, watch" or "start stopwatch" misrecognized as "start stop watch"
+        let lowercaseText = text.lowercased()
+        if let startRange = lowercaseText.range(of: "start"),
+           let stopRange = lowercaseText.range(of: "stop"),
+           startRange.lowerBound < stopRange.lowerBound {
+            // Check if this looks like "start stopwatch" pattern (start appears before stop)
+            let endIndex = lowercaseText.index(stopRange.upperBound, offsetBy: 10, limitedBy: lowercaseText.endIndex) ?? lowercaseText.endIndex
+            let textBetween = String(lowercaseText[startRange.lowerBound..<endIndex])
+            if textBetween.range(of: "start[,\\s]+stop", options: .regularExpression) != nil {
+                return "start"
+            }
+        }
+        
         let timerActions: [String: String] = [
             "set": "\\b(?:set|setup|set\\s+up|configure|configuration|adjust|adjustment|change|modify|edit|customize|establish|define|specify|determine|fix|assign|allocate|program|preset|input|enter|put\\s+in|make\\s+it|arrange|organize|prepare|setting)\\b",
             
@@ -1615,7 +1667,7 @@ class SlotExtractor {
     
     private func extractMediaAction(text: String) -> String? {
         let mediaActions: [String: String] = [
-            "play": "\\b(?:play|playing|played|resume|resuming|resumed|continue|continuing|continued|unpause|unpausing|unpaused|start\\s+playing|begin\\s+playing|kick\\s+off|fire\\s+up|roll|rolling|spun|spin|spinning)\\b",
+            "play": "\\b(?:play|playing|played|resume|resuming|resumed|continue|continuing|continued|unpause|unpausing|unpaused|start(?:\\s+playing)?|begin\\s+playing|turn\\s+on|switch\\s+on|kick\\s+off|fire\\s+up|roll|rolling|spun|spin|spinning)\\b",
             
             "pause": "\\b(?:pause|pausing|paused|hold|holding|held|freeze|freezing|frozen|stop\\s+temporarily|suspend|suspended|suspending|halt\\s+temporarily|break|breaking|broke|interrupt|interrupting|interrupted)\\b",
             
@@ -1645,9 +1697,9 @@ class SlotExtractor {
             
             "repeat": "\\b(?:repeat|repeating|repeated|loop|looping|looped|cycle|cycling|cycled|replay|replaying|replayed|encore|encoring|encored|again|repeat\\s+mode|loop\\s+mode|continuous\\s+play|infinite\\s+play)\\b",
             
-            "increase": "\\b(?:increase|increased|increasing|up|higher|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
+            "increase": "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
             
-            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b"
+            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|low|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b"
         ]
         
         // Sort actions by pattern specificity (longer patterns first for better matching)
@@ -1665,8 +1717,8 @@ class SlotExtractor {
     private func extractAppAction(text: String) -> String? {
         let appActions: [String: String] = [
             "open": "\\b(?:open|opened|opening|launch|launched|launching|start|show|display|view|access|load|bring\\s+up|pull\\s+up|fire\\s+up|boot|go\\s+to|navigate\\s+to|switch\\s+to|take\\s+me\\s+to|turn\\s+on|on|enable|enabled|activate|activated|power\\s+on|switch\\s+on)\\b",
-            "increase": "\\b(?:increase|increased|increasing|up|higher|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
-            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b"
+            "increase": "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
+            "decrease": "\\b(?:decrease|decreased|decreasing|down|lower|low|lowered|lowering|reduce|reduced|reducing|diminish|diminished|diminishing|lessen|lessened|lessening|drop|dropped|dropping|cut|cutting|turn\\s+down|bring\\s+down|scale\\s+down|step\\s+down|tone\\s+down|dial\\s+down|wind\\s+down|ramp\\s+down|make\\s+it\\s+lower|quieter|dimmer|weaker|less|minimize|min\\s+out|soften)\\b"
         ]
         // Sort actions by pattern specificity (longer patterns first for better matching)
         let sortedActions = appActions.sorted { $0.value.count > $1.value.count }
@@ -2016,6 +2068,9 @@ class SlotExtractor {
     
     private func extractApp(text: String) -> String? {
         let apps: [String: String] = [
+            "timer": "\\b(?:timer|timers|countdown|count\\s+down|timer\\s+app)\\b",
+            "stopwatch": "\\b(?:stopwatch|stop\\s+watch|chronometer|chrono|lap\\s+timer|stopwatch\\s+app)\\b",
+            "alarm": "\\b(?:alarm|alarms|alarm\\s+clock|wake\\s+up|alarm\\s+app)\\b",
             "heart rate": "\\b(?:heart\\s+rate|heartrate|heart\\s+beat|heartbeat|pulse|pulse\\s+rate|bpm|beats\\s+per\\s+minute|cardiac|cardiac\\s+rate|heart\\s+rhythm|resting\\s+heart\\s+rate|rhr|max\\s+heart\\s+rate|maximum\\s+heart\\s+rate|heart\\s+health|cardiovascular|cardio|ticker|heart\\s+monitor|heart\\s+sensor|hr|beat|beats|beating|palpitation|palpitations|tachycardia|bradycardia|heart\\s+zone|target\\s+heart\\s+rate|recovery\\s+heart\\s+rate)\\b",
             "blood oxygen": "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
             "stress": "\\b(?:stress|stressed|stressful|stress\\s+level|stress\\s+score|stress\\s+index|anxiety|anxious|worried|worry|worrying|tension|tense|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|burnt\\s+out|mental\\s+stress|emotional\\s+stress|psychological\\s+stress|chronic\\s+stress|acute\\s+stress|relaxation|relax|calm|calmness|peace|peaceful|tranquil|serene|zen|mindfulness)\\b",
@@ -2397,6 +2452,40 @@ class SlotExtractor {
                 }
             }
             
+            // Normalize heart rate threshold to valid ranges based on type
+            // Note: metric is already combined with type (e.g., "low heart rate" or "high heart rate")
+            if let metric = slots["metric"] as? String, metric.contains("heart rate") {
+                if let threshold = slots["threshold"] {
+                    let thresholdValue: Int
+                    if let intVal = threshold as? Int {
+                        thresholdValue = intVal
+                    } else if let doubleVal = threshold as? Double {
+                        thresholdValue = Int(doubleVal)
+                    } else if let stringVal = threshold as? String {
+                        thresholdValue = Int(stringVal) ?? 0
+                    } else {
+                        thresholdValue = 0
+                    }
+                    
+                    if thresholdValue > 0 {
+                        let normalizedThreshold: Int
+                        if metric.lowercased().contains("low") {
+                            // Low HR alert can only be 40, 45, or 50
+                            let validOptions = [40, 45, 50]
+                            normalizedThreshold = validOptions.min(by: { abs($0 - thresholdValue) < abs($1 - thresholdValue) }) ?? 50
+                        } else if metric.lowercased().contains("high") {
+                            // High HR alert can be 100-150 in increments of 5
+                            let validOptions = Array(stride(from: 100, through: 150, by: 5))
+                            let nearest = validOptions.min(by: { abs($0 - thresholdValue) < abs($1 - thresholdValue) }) ?? 100
+                            normalizedThreshold = min(max(nearest, 100), 150)
+                        } else {
+                            normalizedThreshold = thresholdValue
+                        }
+                        slots["threshold"] = normalizedThreshold
+                    }
+                }
+            }
+            
             // Add default unit based on metric if not already set
             if slots["unit"] == nil, let metric = slots["metric"] as? String {
                 switch metric {
@@ -2422,10 +2511,27 @@ class SlotExtractor {
             }
             
         case "TimerStopwatch":
+            // Extract tool if not present
+            if slots["tool"] == nil {
+                if let tool = extractTool(text: text) {
+                    slots["tool"] = tool
+                }
+            }
+            
             // For timer/stopwatch, try to extract more specific actions
             if slots["action"] == nil {
                 if let timerAction = extractTimerAction(text: text) {
                     slots["action"] = timerAction
+                } else if let tool = slots["tool"] as? String {
+                    // Default action when only tool is mentioned
+                    let defaultAction: String
+                    switch tool {
+                    case "stopwatch":
+                        defaultAction = "start"
+                    default:
+                        defaultAction = "open"
+                    }
+                    slots["action"] = defaultAction
                 }
             }
             
@@ -2434,6 +2540,12 @@ class SlotExtractor {
                 if let value = extractValue(text: text, intent: intent) {
                     slots["value"] = value
                 }
+            }
+            
+            // Extract day for timer/alarm setting with default "today"
+            if slots["day"] == nil {
+                let day = extractDay(text: text) ?? "today"
+                slots["day"] = day
             }
             
         case "PhoneAction":
@@ -2445,11 +2557,9 @@ class SlotExtractor {
             }
             
         case "MediaAction":
-            // For media actions, try to extract more specific actions
-            if slots["action"] == nil {
-                if let mediaAction = extractMediaAction(text: text) {
-                    slots["action"] = mediaAction
-                }
+            // Always use media-specific action extraction to override general action
+            if let mediaAction = extractMediaAction(text: text) {
+                slots["action"] = mediaAction
             }
             
             // Add default target if action is play
@@ -2458,6 +2568,7 @@ class SlotExtractor {
                     slots["target"] = "music"
                 }
             }
+            // Don't extract state for MediaAction - use action instead
             
         case "OpenApp":
             // For app actions, try to extract more specific actions
