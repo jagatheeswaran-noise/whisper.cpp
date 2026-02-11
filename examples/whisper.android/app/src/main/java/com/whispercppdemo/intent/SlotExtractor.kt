@@ -583,6 +583,7 @@ class SlotExtractor {
             "period" -> extractPeriod(originalText)
             "event_type" -> extractEventType(originalText)
             "day" -> extractDay(originalText)
+            "level" -> extractLevel(originalText)
             "message" -> "Sorry, please say again"
             else -> null
         }
@@ -988,6 +989,34 @@ class SlotExtractor {
         }
         
         return result
+    }
+    
+    /**
+     * Extracts brightness level from text
+     * Examples: "level 1", "brightness to 5", "set brightness level 3", "change brightness to level 2"
+     */
+    private fun extractLevel(text: String): Int? {
+        val processedText = convertWordToNumber(text.lowercase())
+
+        // Must contain a number
+        val numberMatch = Regex("\\b(\\d+)\\b").find(processedText) ?: return null
+        val level = numberMatch.groupValues[1].toIntOrNull() ?: return null
+
+        // Must be brightness-related
+        val isBrightnessContext = Regex(
+            "\\b(brightness|bright)\\b"
+        ).containsMatchIn(processedText)
+
+        // Must explicitly mention level OR an action that implies setting
+        val isLevelContext = Regex(
+            "\\b(level|lvl|set|change|adjust)\\b"
+        ).containsMatchIn(processedText)
+
+        return if (isBrightnessContext && isLevelContext) {
+            level
+        } else {
+            null
+        }
     }
     
     /**
@@ -1489,6 +1518,11 @@ class SlotExtractor {
     }
     
     private fun extractAction(text: String): String? {
+        // Edge case: if user just says "stopwatch" in any variant (stopwatch, stop watch, stop, watch, etc.), default action is "start"
+        if (text.trim().matches(Regex("^stop[\\s.,]*watch[.,]?$", RegexOption.IGNORE_CASE))) {
+            return "start"
+        }
+        
         // Special handling: if "start" appears before "stop" in the text, prioritize "start"
         // This handles cases like "start stopwatch" misrecognized as "start, stop, watch" or "start stop watch"
         val startIndex = text.indexOf("start", ignoreCase = true)
@@ -1565,6 +1599,11 @@ class SlotExtractor {
     }
 
     private fun extractTimerAction(text: String): String? {
+        // Edge case: if user just says "stopwatch" in any variant (stopwatch, stop watch, stop, watch, etc.), default action is "start"
+        if (text.trim().matches(Regex("^stop[\\s.,]*watch[.,]?$", RegexOption.IGNORE_CASE))) {
+            return "start"
+        }
+        
         // Special handling: if "start" appears before "stop" in the text, prioritize "start"
         // This handles cases like "start, stop, watch" or "start stopwatch" misrecognized as "start stop watch"
         val startIndex = text.indexOf("start", ignoreCase = true)
@@ -1648,6 +1687,7 @@ class SlotExtractor {
     }
 
     private fun extractAppAction(text: String): String? {
+        // Priority 1: Check for increase/decrease keywords first (highest priority)
         val appActions = mapOf(
             "open" to "\\b(?:open|opened|opening|launch|launched|launching|start|show|display|view|access|load|bring\\s+up|pull\\s+up|fire\\s+up|boot|go\\s+to|navigate\\s+to|switch\\s+to|take\\s+me\\s+to|turn\\s+on|on|enable|enabled|activate|activated|power\\s+on|switch\\s+on)\\b",
 
@@ -1660,9 +1700,24 @@ class SlotExtractor {
         val sortedActions = appActions.entries.sortedByDescending { it.value.length }
         
         for ((action, pattern) in sortedActions) {
-            if (text.contains(pattern.toRegex(RegexOption.IGNORE_CASE))) {
+            if (Regex(pattern, RegexOption.IGNORE_CASE).containsMatchIn(text)) {
                 return action
             }
+        }
+        
+        // Priority 2: If no increase/decrease detected, check for level with number
+        val hasLevelKeyword = Regex("\\b(?:level|lvl)\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)
+        val hasNumber = Regex("\\b\\d+\\b").containsMatchIn(text)
+
+        if (hasLevelKeyword && hasNumber) {
+            Log.d(LOG_TAG, "  ✓ Detected 'level' action with numeric value")
+            return "level"
+        }
+        
+        // Priority 3: If only number present (no level keyword, no increase/decrease), still return level
+        if (hasNumber) {
+            Log.d(LOG_TAG, "  ✓ Detected numeric value without keywords, defaulting to 'level' action")
+            return "level"
         }
         
         return null
@@ -2007,11 +2062,6 @@ class SlotExtractor {
     
     private fun extractApp(text: String): String? {
         val apps = mapOf(
-            "timer" to "\\b(?:timer|timers|countdown|count\\s+down|timer\\s+app)\\b",
-            
-            "stopwatch" to "\\b(?:stopwatch|stop\\s+watch|chronometer|chrono|lap\\s+timer|stopwatch\\s+app)\\b",
-            
-            "alarm" to "\\b(?:alarm|alarms|alarm\\s+clock|wake\\s+up|alarm\\s+app)\\b",
             
             "heart rate" to "\\b(?:heart\\s+rate|heartrate|heart\\s+beat|heartbeat|pulse|pulse\\s+rate|bpm|beats\\s+per\\s+minute|cardiac|cardiac\\s+rate|heart\\s+rhythm|resting\\s+heart\\s+rate|rhr|max\\s+heart\\s+rate|maximum\\s+heart\\s+rate|heart\\s+health|cardiovascular|cardio|ticker|heart\\s+monitor|heart\\s+sensor|hr|beat|beats|beating|palpitation|palpitations|tachycardia|bradycardia|heart\\s+zone|target\\s+heart\\s+rate|recovery\\s+heart\\s+rate)\\b",
             
@@ -2408,14 +2458,6 @@ class SlotExtractor {
                     val action = extractTimerAction(text)
                     if (action != null) {
                         slots["action"] = action
-                    } else if (slots.containsKey("tool")) {
-                        // Default action when only tool is mentioned
-                        val tool = slots["tool"] as? String
-                        val defaultAction = when (tool) {
-                            "stopwatch" -> "start"
-                            else -> "open"
-                        }
-                        slots["action"] = defaultAction
                     }
                 }
                 if (!slots.containsKey("value")) {
@@ -2504,6 +2546,21 @@ class SlotExtractor {
                     val action = extractAppAction(text)
                     if (action != null) {
                         slots["action"] = action
+                    }
+                }
+                // Extract level for brightness control when action="level" or no action keywords
+                if (!slots.containsKey("level")) {
+                    val app = slots["app"] as? String
+                    val action = slots["action"] as? String
+                    if (app == "brightness") {
+                        // Extract level if action is "level" or if no action-based keywords detected
+                        if (action == "level") {
+                            val level = extractLevel(text)
+                            if (level != null) {
+                                slots["level"] = level
+                                Log.d(LOG_TAG, "  ✓ Extracted brightness level: $level")
+                            }
+                        }
                     }
                 }
                 if (!slots.containsKey("target")) {

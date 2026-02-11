@@ -610,6 +610,8 @@ class SlotExtractor {
             return extractEventType(text: originalText)
         case "day":
             return extractDay(text: originalText)
+        case "level":
+            return extractLevel(text: originalText)
         case "message":
             return "Sorry, please say again"
         default:
@@ -1020,6 +1022,28 @@ class SlotExtractor {
         return result
     }
     
+    /// Extracts brightness level from text
+    /// Examples: "level 1", "brightness to 5", "set brightness level 3", "change brightness to level 2"
+    private func extractLevel(text: String) -> Int? {
+        let processedText = convertWordToNumber(text.lowercased())
+        
+        // Must contain a number
+        guard let numberRegex = try? NSRegularExpression(pattern: "\\b(\\d+)\\b"),
+              let numberMatch = numberRegex.firstMatch(in: processedText, range: NSRange(processedText.startIndex..., in: processedText)),
+              let numberRange = Range(numberMatch.range(at: 1), in: processedText),
+              let level = Int(String(processedText[numberRange])) else {
+            return nil
+        }
+        
+        // Must be brightness-related
+        let isBrightnessContext = processedText.range(of: "\\b(brightness|bright)\\b", options: .regularExpression) != nil
+        
+        // Must explicitly mention level OR an action that implies setting
+        let isLevelContext = processedText.range(of: "\\b(level|lvl|set|change|adjust)\\b", options: .regularExpression) != nil
+        
+        return (isBrightnessContext && isLevelContext) ? level : nil
+    }
+    
     /// Normalizes various time formats to 24-hour HH:MM format
     /// Examples:
     /// - "730" -> "07:30"
@@ -1417,10 +1441,12 @@ class SlotExtractor {
                    let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) {
                     
                     // Handle combined time formats for duration (e.g., "1h 30m" or "1:30")
+                    // Skip duration parsing entirely for alarm contexts to prevent "5:45" from becoming "345"
                     if match.numberOfRanges > 2,
                        let range2 = Range(match.range(at: 2), in: text),
                        !String(text[range2]).isEmpty,
-                       text.range(of: "\\b(?:am|pm)\\b", options: .regularExpression) == nil {
+                       text.range(of: "\\b(?:am|pm)\\b", options: .regularExpression) == nil,
+                       !isAlarmContext {
                         
                         if isTimerContext {
                             // For timers, convert combined duration to seconds
@@ -1428,7 +1454,7 @@ class SlotExtractor {
                                 return normalizeTimerDuration(text, matchedValue: String(text[matchRange]))
                             }
                         } else {
-                            // For other contexts, return total minutes as before
+                            // For other contexts, return total minutes
                             if let range1 = Range(match.range(at: 1), in: text) {
                                 let hours = Int(text[range1]) ?? 0
                                 let minutes = Int(text[range2]) ?? 0
@@ -1553,6 +1579,11 @@ class SlotExtractor {
     }
     
     private func extractAction(text: String) -> String? {
+        // Edge case: if user just says "stopwatch" in any variant (stopwatch, stop watch, stop, watch, etc.), default action is "start"
+        if text.trimmingCharacters(in: .whitespaces).range(of: "^stop[\\s.,]*watch[.,]?$", options: [.regularExpression, .caseInsensitive]) != nil {
+            return "start"
+        }
+        
         // Special handling: if "start" appears before "stop" in the text, prioritize "start"
         // This handles cases like "start stopwatch" misrecognized as "start, stop, watch" or "start stop watch"
         let lowercaseText = text.lowercased()
@@ -1631,6 +1662,11 @@ class SlotExtractor {
     
     
     private func extractTimerAction(text: String) -> String? {
+        // Edge case: if user just says "stopwatch" in any variant (stopwatch, stop watch, stop, watch, etc.), default action is "start"
+        if text.trimmingCharacters(in: .whitespaces).range(of: "^stop[\\s.,]*watch[.,]?$", options: [.regularExpression, .caseInsensitive]) != nil {
+            return "start"
+        }
+        
         // Special handling: if "start" appears before "stop" in the text, prioritize "start"
         // This handles cases like "start, stop, watch" or "start stopwatch" misrecognized as "start stop watch"
         let lowercaseText = text.lowercased()
@@ -1714,7 +1750,8 @@ class SlotExtractor {
         return nil
     }
     
-    private func extractAppAction(text: String) -> String? {
+        private func extractAppAction(text: String) -> String? {
+        // Priority 1: Check for increase/decrease keywords first (highest priority)
         let appActions: [String: String] = [
             "open": "\\b(?:open|opened|opening|launch|launched|launching|start|show|display|view|access|load|bring\\s+up|pull\\s+up|fire\\s+up|boot|go\\s+to|navigate\\s+to|switch\\s+to|take\\s+me\\s+to|turn\\s+on|on|enable|enabled|activate|activated|power\\s+on|switch\\s+on)\\b",
             "increase": "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b",
@@ -1727,6 +1764,22 @@ class SlotExtractor {
                 return action
             }
         }
+        
+        // Priority 2: If no increase/decrease detected, check for level with number
+        let hasLevelKeyword = text.range(of: "\\b(?:level|lvl)\\b", options: .regularExpression) != nil
+        let hasNumber = text.range(of: "\\b\\d+\\b", options: .regularExpression) != nil
+        
+        if hasLevelKeyword && hasNumber {
+            Self.logger.debug("✓ Detected 'level' action with numeric value")
+            return "level"
+        }
+        
+    // Priority 3: If only number present (no level keyword, no increase/decrease), still return level
+        if hasNumber {
+            Self.logger.debug("✓ Detected numeric value without keywords, defaulting to 'level' action")
+            return "level"
+        }
+        
         return nil
     }
     
@@ -2068,9 +2121,6 @@ class SlotExtractor {
     
     private func extractApp(text: String) -> String? {
         let apps: [String: String] = [
-            "timer": "\\b(?:timer|timers|countdown|count\\s+down|timer\\s+app)\\b",
-            "stopwatch": "\\b(?:stopwatch|stop\\s+watch|chronometer|chrono|lap\\s+timer|stopwatch\\s+app)\\b",
-            "alarm": "\\b(?:alarm|alarms|alarm\\s+clock|wake\\s+up|alarm\\s+app)\\b",
             "heart rate": "\\b(?:heart\\s+rate|heartrate|heart\\s+beat|heartbeat|pulse|pulse\\s+rate|bpm|beats\\s+per\\s+minute|cardiac|cardiac\\s+rate|heart\\s+rhythm|resting\\s+heart\\s+rate|rhr|max\\s+heart\\s+rate|maximum\\s+heart\\s+rate|heart\\s+health|cardiovascular|cardio|ticker|heart\\s+monitor|heart\\s+sensor|hr|beat|beats|beating|palpitation|palpitations|tachycardia|bradycardia|heart\\s+zone|target\\s+heart\\s+rate|recovery\\s+heart\\s+rate)\\b",
             "blood oxygen": "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
             "stress": "\\b(?:stress|stressed|stressful|stress\\s+level|stress\\s+score|stress\\s+index|anxiety|anxious|worried|worry|worrying|tension|tense|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|burnt\\s+out|mental\\s+stress|emotional\\s+stress|psychological\\s+stress|chronic\\s+stress|acute\\s+stress|relaxation|relax|calm|calmness|peace|peaceful|tranquil|serene|zen|mindfulness)\\b",
@@ -2339,9 +2389,9 @@ class SlotExtractor {
                 }
             }
             
-            // Add default time_ref if not present
+            // Extract time_ref with default "today" if not found
             if slots["time_ref"] == nil {
-                slots["time_ref"] = "today"
+                slots["time_ref"] = extractTimeRef(text: text) ?? "today"
             }
             
             // For distance metric, always use km as the standard unit
@@ -2510,28 +2560,11 @@ class SlotExtractor {
                 }
             }
             
-        case "TimerStopwatch":
-            // Extract tool if not present
-            if slots["tool"] == nil {
-                if let tool = extractTool(text: text) {
-                    slots["tool"] = tool
-                }
-            }
-            
+        case "TimerStopwatch":            
             // For timer/stopwatch, try to extract more specific actions
             if slots["action"] == nil {
                 if let timerAction = extractTimerAction(text: text) {
                     slots["action"] = timerAction
-                } else if let tool = slots["tool"] as? String {
-                    // Default action when only tool is mentioned
-                    let defaultAction: String
-                    switch tool {
-                    case "stopwatch":
-                        defaultAction = "start"
-                    default:
-                        defaultAction = "open"
-                    }
-                    slots["action"] = defaultAction
                 }
             }
             
@@ -2577,6 +2610,18 @@ class SlotExtractor {
                     slots["action"] = appAction
                 } else {
                     slots["action"] = "open"  // Default action
+                }
+            }
+            
+            // Extract level for brightness control when action="level" or no action keywords
+            if slots["level"] == nil {
+                if let app = slots["app"] as? String, app == "brightness" {
+                    if let action = slots["action"] as? String, action == "level" {
+                        if let level = extractLevel(text: text) {
+                            slots["level"] = level
+                            Self.logger.debug("✓ Extracted brightness level: \(level)")
+                        }
+                    }
                 }
             }
             

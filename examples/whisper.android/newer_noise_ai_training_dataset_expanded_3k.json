@@ -8824,6 +8824,14 @@
     }
   },
   {
+    "text": "stopwatch",
+    "intent": "TimerStopwatch",
+    "slots": {
+      "tool": "stopwatch",
+      "action": "start"
+    }
+  },
+  {
     "text": "completed weightlifting workout, 45 minutes",
     "intent": "LogEvent",
     "slots": {
