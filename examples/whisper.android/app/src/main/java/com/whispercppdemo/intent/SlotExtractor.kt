@@ -834,6 +834,8 @@ class SlotExtractor {
     }
     
     private fun extractThreshold(text: String): Int? {
+        // Convert word numbers to digits first (e.g., "fifty" -> "50")
+        val processedText = convertWordToNumber(text)
         // Look for numbers in context
         val numberPatterns = listOf(
             // Direct number with unit pattern - expanded units
@@ -868,14 +870,14 @@ class SlotExtractor {
         )
         
         for (pattern in numberPatterns) {
-            val match = pattern.toRegex().find(text)
+            val match = pattern.toRegex().find(processedText)
             if (match != null) {
                 return match.groupValues[1].toDoubleOrNull()?.toInt()
             }
         }
         
         // Fallback to any number
-        val numbers = "\\b(\\d+(?:\\.\\d+)?)\\b".toRegex().findAll(text)
+        val numbers = "\\b(\\d+(?:\\.\\d+)?)\\b".toRegex().findAll(processedText)
         return numbers.firstOrNull()?.groupValues?.get(1)?.toDoubleOrNull()?.toInt()
     }
     
@@ -968,11 +970,65 @@ class SlotExtractor {
             "fourteen" to "14", "fifteen" to "15", "sixteen" to "16", "seventeen" to "17",
             "eighteen" to "18", "nineteen" to "19", "twenty" to "20", "thirty" to "30",
             "forty" to "40", "fifty" to "50", "sixty" to "60", "seventy" to "70",
-            "eighty" to "80", "ninety" to "90",
+            "eighty" to "80", "ninety" to "90", "hundred" to "100",
             "a" to "1", "an" to "1", "half" to "0.5", "quarter" to "0.25"
         )
         
         var result = text.lowercase()
+        
+        // Handle standalone "hundred" with optional tens/ones: "hundred fifty" -> "150", "hundred" -> "100"
+        val standaloneHundredPattern = "\\bhundred(?:\\s+(?:and\\s+)?((?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)|(?:one|two|three|four|five|six|seven|eight|nine)))?\\b".toRegex()
+        standaloneHundredPattern.findAll(result).toList().reversed().forEach { match ->
+            // Check if this "hundred" is preceded by a digit word (which would be handled by the next pattern)
+            val startIndex = result.indexOf(match.value)
+            val precedingText = if (startIndex > 0) result.substring(maxOf(0, startIndex - 20), startIndex) else ""
+            val hasPrecedingNumber = precedingText.matches(Regex(".*\\b(one|two|three|four|five|six|seven|eight|nine)\\s*$"))
+            
+            if (!hasPrecedingNumber) {
+                var remainder = 0
+                
+                if (match.groupValues.size > 1 && match.groupValues[1].isNotEmpty()) {
+                    val remainderText = match.groupValues[1]
+                    // Check if it's a compound number like "twenty five"
+                    val compoundMatch = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b".toRegex().find(remainderText)
+                    if (compoundMatch != null) {
+                        val tens = wordToDigit[compoundMatch.groupValues[1]]?.toInt() ?: 0
+                        val ones = wordToDigit[compoundMatch.groupValues[2]]?.toInt() ?: 0
+                        remainder = tens + ones
+                    } else {
+                        // Single word number
+                        remainder = wordToDigit[remainderText]?.toInt() ?: 0
+                    }
+                }
+                
+                val total = 100 + remainder
+                result = result.replace(match.value, total.toString())
+            }
+        }
+        
+        // Handle hundreds with optional tens and ones: "two hundred fifty" -> "250", "one hundred" -> "100"
+        val hundredPattern = "\\b(one|two|three|four|five|six|seven|eight|nine)\\s+hundred(?:\\s+(?:and\\s+)?((?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)|(?:one|two|three|four|five|six|seven|eight|nine)))?\\b".toRegex()
+        hundredPattern.findAll(result).toList().reversed().forEach { match ->
+            val hundreds = wordToDigit[match.groupValues[1]]?.toInt() ?: 0
+            var remainder = 0
+            
+            if (match.groupValues.size > 2 && match.groupValues[2].isNotEmpty()) {
+                val remainderText = match.groupValues[2]
+                // Check if it's a compound number like "twenty five"
+                val compoundMatch = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b".toRegex().find(remainderText)
+                if (compoundMatch != null) {
+                    val tens = wordToDigit[compoundMatch.groupValues[1]]?.toInt() ?: 0
+                    val ones = wordToDigit[compoundMatch.groupValues[2]]?.toInt() ?: 0
+                    remainder = tens + ones
+                } else {
+                    // Single word number
+                    remainder = wordToDigit[remainderText]?.toInt() ?: 0
+                }
+            }
+            
+            val total = (hundreds * 100) + remainder
+            result = result.replace(match.value, total.toString())
+        }
         
         // Handle compound numbers like "twenty five" -> "25"
         val compoundPattern = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b".toRegex()
@@ -1705,9 +1761,11 @@ class SlotExtractor {
             }
         }
         
+        val processedText = convertWordToNumber(text)
+
         // Priority 2: If no increase/decrease detected, check for level with number
-        val hasLevelKeyword = Regex("\\b(?:level|lvl)\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)
-        val hasNumber = Regex("\\b\\d+\\b").containsMatchIn(text)
+        val hasLevelKeyword = Regex("\\b(?:level|lvl)\\b", RegexOption.IGNORE_CASE).containsMatchIn(processedText)
+        val hasNumber = Regex("\\b\\d+\\b").containsMatchIn(processedText)
 
         if (hasLevelKeyword && hasNumber) {
             Log.d(LOG_TAG, "  ✓ Detected 'level' action with numeric value")
@@ -2418,7 +2476,7 @@ class SlotExtractor {
                         slots["unit"] = "km"
                     }
                 }
-                
+
                 // Normalize heart rate threshold to valid ranges based on type
                 // Note: metric is already combined with type (e.g., "low heart rate" or "high heart rate")
                 if (metric != null && metric.contains("heart rate") && slots.containsKey("threshold")) {
@@ -2429,6 +2487,7 @@ class SlotExtractor {
                         else -> null
                     }
                     
+
                     if (threshold != null) {
                         val normalizedThreshold = when {
                             metric.contains("low", ignoreCase = true) -> {

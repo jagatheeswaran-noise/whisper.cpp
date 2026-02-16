@@ -891,6 +891,9 @@ class SlotExtractor {
     
     
     private func extractThreshold(text: String) -> Int? {
+        // Convert word numbers to digits first (e.g., "fifty" -> "50")
+        let processedText = convertWordToNumber(text)
+        
         // Look for numbers in context
         let numberPatterns = [
             "\\b(\\d+(?:\\.\\d+)?)\\s*(?:bpm|beats?\\s+per\\s+minute|kg|kgs|kilogram|kilograms|pounds?|lbs?|lb|km|kms|kilometer|kilometers|kilometre|kilometres|miles?|mi|meter|meters|metre|metres|m|feet|foot|ft|percent|%|percentage|hours?|hrs?|hr|h|minutes?|mins?|min|seconds?|secs?|sec|s|kcal|calories?|cal|cals|steps?|grams?|g|liters?|litres?|l|ltr)\\b",
@@ -906,8 +909,8 @@ class SlotExtractor {
         ]
         
         for pattern in numberPatterns {
-            if let range = text.range(of: pattern, options: .regularExpression) {
-                let matchedText = String(text[range])
+            if let range = processedText.range(of: pattern, options: .regularExpression) {
+                let matchedText = String(processedText[range])
                 let matches = try! NSRegularExpression(pattern: "(\\d+(?:\\.\\d+)?)", options: []).matches(in: matchedText, options: [], range: NSRange(location: 0, length: matchedText.count))
                 if let match = matches.first {
                     let numberRange = Range(match.range, in: matchedText)!
@@ -920,10 +923,10 @@ class SlotExtractor {
         }
         
         // Fallback to any number
-        let matches = numberRegex.matches(in: text, options: [], range: NSRange(location: 0, length: text.count))
+        let matches = numberRegex.matches(in: processedText, options: [], range: NSRange(location: 0, length: processedText.count))
         if let match = matches.first {
-            let numberRange = Range(match.range, in: text)!
-            let numberString = String(text[numberRange])
+            let numberRange = Range(match.range, in: processedText)!
+            let numberString = String(processedText[numberRange])
             if let number = Double(numberString) {
                 return Int(number)
             }
@@ -989,11 +992,84 @@ class SlotExtractor {
             "fourteen": "14", "fifteen": "15", "sixteen": "16", "seventeen": "17",
             "eighteen": "18", "nineteen": "19", "twenty": "20", "thirty": "30",
             "forty": "40", "fifty": "50", "sixty": "60", "seventy": "70",
-            "eighty": "80", "ninety": "90",
+            "eighty": "80", "ninety": "90", "hundred": "100",
             "a": "1", "an": "1", "half": "0.5", "quarter": "0.25"
         ]
         
         var result = text.lowercased()
+        
+        // Handle standalone "hundred" with optional tens/ones: "hundred fifty" -> "150", "hundred" -> "100"
+        let standaloneHundredPattern = "\\bhundred(?:\\s+(?:and\\s+)?((?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)|(?:one|two|three|four|five|six|seven|eight|nine)))?\\b"
+        if let regex = try? NSRegularExpression(pattern: standaloneHundredPattern, options: [.caseInsensitive]) {
+            let matches = regex.matches(in: result, range: NSRange(result.startIndex..., in: result))
+            for match in matches.reversed() {
+                if let fullRange = Range(match.range, in: result) {
+                    // Check if this "hundred" is preceded by a digit word (which would be handled by the next pattern)
+                    let startIndex = result.distance(from: result.startIndex, to: fullRange.lowerBound)
+                    let precedingStartIndex = max(0, startIndex - 20)
+                    let precedingStart = result.index(result.startIndex, offsetBy: precedingStartIndex)
+                    let precedingText = String(result[precedingStart..<fullRange.lowerBound])
+                    let hasPrecedingNumber = precedingText.range(of: "\\b(one|two|three|four|five|six|seven|eight|nine)\\s*$", options: .regularExpression) != nil
+                    
+                    if !hasPrecedingNumber {
+                        var remainder = 0
+                        
+                        if match.numberOfRanges > 1, let remainderRange = Range(match.range(at: 1), in: result) {
+                            let remainderText = String(result[remainderRange])
+                            // Check if it's a compound number like "twenty five"
+                            let compoundPattern = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b"
+                            if let compoundRegex = try? NSRegularExpression(pattern: compoundPattern, options: [.caseInsensitive]),
+                               let compoundMatch = compoundRegex.firstMatch(in: remainderText, range: NSRange(remainderText.startIndex..., in: remainderText)),
+                               let tensRange = Range(compoundMatch.range(at: 1), in: remainderText),
+                               let onesRange = Range(compoundMatch.range(at: 2), in: remainderText) {
+                                let tens = Int(wordToDigit[String(remainderText[tensRange])] ?? "0") ?? 0
+                                let ones = Int(wordToDigit[String(remainderText[onesRange])] ?? "0") ?? 0
+                                remainder = tens + ones
+                            } else {
+                                // Single word number
+                                remainder = Int(wordToDigit[remainderText] ?? "0") ?? 0
+                            }
+                        }
+                        
+                        let total = 100 + remainder
+                        result.replaceSubrange(fullRange, with: String(total))
+                    }
+                }
+            }
+        }
+        
+        // Handle hundreds with optional tens and ones: "two hundred fifty" -> "250", "one hundred" -> "100"
+        let hundredPattern = "\\b(one|two|three|four|five|six|seven|eight|nine)\\s+hundred(?:\\s+(?:and\\s+)?((?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)|(?:one|two|three|four|five|six|seven|eight|nine)))?\\b"
+        if let regex = try? NSRegularExpression(pattern: hundredPattern, options: [.caseInsensitive]) {
+            let matches = regex.matches(in: result, range: NSRange(result.startIndex..., in: result))
+            for match in matches.reversed() {
+                if let hundredsRange = Range(match.range(at: 1), in: result),
+                   let fullRange = Range(match.range, in: result) {
+                    let hundreds = Int(wordToDigit[String(result[hundredsRange])] ?? "0") ?? 0
+                    var remainder = 0
+                    
+                    if match.numberOfRanges > 2, let remainderRange = Range(match.range(at: 2), in: result) {
+                        let remainderText = String(result[remainderRange])
+                        // Check if it's a compound number like "twenty five"
+                        let compoundPattern = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b"
+                        if let compoundRegex = try? NSRegularExpression(pattern: compoundPattern, options: [.caseInsensitive]),
+                           let compoundMatch = compoundRegex.firstMatch(in: remainderText, range: NSRange(remainderText.startIndex..., in: remainderText)),
+                           let tensRange = Range(compoundMatch.range(at: 1), in: remainderText),
+                           let onesRange = Range(compoundMatch.range(at: 2), in: remainderText) {
+                            let tens = Int(wordToDigit[String(remainderText[tensRange])] ?? "0") ?? 0
+                            let ones = Int(wordToDigit[String(remainderText[onesRange])] ?? "0") ?? 0
+                            remainder = tens + ones
+                        } else {
+                            // Single word number
+                            remainder = Int(wordToDigit[remainderText] ?? "0") ?? 0
+                        }
+                    }
+                    
+                    let total = (hundreds * 100) + remainder
+                    result.replaceSubrange(fullRange, with: String(total))
+                }
+            }
+        }
         
         // Handle compound numbers like "twenty five" -> "25"
         let compoundPattern = "\\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\\s-]+(one|two|three|four|five|six|seven|eight|nine)\\b"
@@ -1463,7 +1539,7 @@ class SlotExtractor {
                         }
                     }
                     
-                    if let timeRange = Range(match.range(at: 1), in: text) {
+                    if let timeRange = Range(match.range(at: 0), in: text) {
                         let timeValue = String(text[timeRange])
                         
                         // Check if this is a time format (contains AM/PM or looks like time in alarm context)
@@ -1750,7 +1826,7 @@ class SlotExtractor {
         return nil
     }
     
-        private func extractAppAction(text: String) -> String? {
+    private func extractAppAction(text: String) -> String? {
         // Priority 1: Check for increase/decrease keywords first (highest priority)
         let appActions: [String: String] = [
             "open": "\\b(?:open|opened|opening|launch|launched|launching|start|show|display|view|access|load|bring\\s+up|pull\\s+up|fire\\s+up|boot|go\\s+to|navigate\\s+to|switch\\s+to|take\\s+me\\s+to|turn\\s+on|on|enable|enabled|activate|activated|power\\s+on|switch\\s+on)\\b",
@@ -1765,9 +1841,11 @@ class SlotExtractor {
             }
         }
         
+        let processedText = convertWordToNumber(text)
+
         // Priority 2: If no increase/decrease detected, check for level with number
-        let hasLevelKeyword = text.range(of: "\\b(?:level|lvl)\\b", options: .regularExpression) != nil
-        let hasNumber = text.range(of: "\\b\\d+\\b", options: .regularExpression) != nil
+        let hasLevelKeyword = processedText.range(of: "\\b(?:level|lvl)\\b", options: .regularExpression) != nil
+        let hasNumber = processedText.range(of: "\\b\\d+\\b", options: .regularExpression) != nil
         
         if hasLevelKeyword && hasNumber {
             Self.logger.debug("✓ Detected 'level' action with numeric value")
