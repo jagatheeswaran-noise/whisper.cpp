@@ -285,8 +285,12 @@ class SlotExtractor {
             "profound sleep", "heavy sleep", "sound sleep", "deep sleep period"
         ),
         "spo2" to listOf(
-            "spo2", "sp o2", "sp o 2", "s p o 2", "s p o2", "sp2", "sp 2", "s p 2", 
+            "spo2", "sp o2", "sp o 2", "s p o 2", "s p o2", "sp2", "sp 2", "s p 2", "spo",
             "spo to", "sp o to", "spo too", "sp o too", "s p o to", "s p o too",
+            "spo2 level", "spo2 levels", "sp o2 level", "sp o2 levels", 
+            "spo to level", "spo to levels", "sp o to level", "sp o to levels",
+            "spo too level", "spo too levels", "sp o too level", "sp o too levels",
+            "s p o 2 level", "s p o 2 levels", "s p o to level", "s p o to levels",
             "oxygen", "blood oxygen", "o2", "o 2", "saturation", "oxygen saturation", 
             "oxygen level", "oxygen levels", "o2 sat", "o 2 sat", "blood o2", "blood o 2", 
             "oxygen sat", "pulse ox", "pulse oximetry", "oximeter", "oxygen reading", 
@@ -1054,21 +1058,38 @@ class SlotExtractor {
     private fun extractLevel(text: String): Int? {
         val processedText = convertWordToNumber(text.lowercase())
 
-        // Must contain a number
+        // First check for percentage pattern (e.g., "80%", "80 percent", "80 %")
+        val percentageMatch = Regex("(\\d+)\\s*(%|percent)").find(processedText)
+        if (percentageMatch != null) {
+            val percentage = percentageMatch.groupValues[1].toIntOrNull() ?: return null
+            
+            // Map percentage to levels 1-5 with rounding
+            // 0-30% → Level 1 (rounds to 20%)
+            // 31-50% → Level 2 (rounds to 40%)
+            // 51-70% → Level 3 (rounds to 60%)
+            // 71-90% → Level 4 (rounds to 80%)
+            // 91-100% → Level 5 (rounds to 100%)
+            val level = when {
+                percentage <= 30 -> 1
+                percentage <= 50 -> 2
+                percentage <= 70 -> 3
+                percentage <= 90 -> 4
+                else -> 5
+            }
+            
+            return level
+        }
+
+        // Fallback: check for explicit level number
         val numberMatch = Regex("\\b(\\d+)\\b").find(processedText) ?: return null
         val level = numberMatch.groupValues[1].toIntOrNull() ?: return null
-
-        // Must be brightness-related
-        val isBrightnessContext = Regex(
-            "\\b(brightness|bright)\\b"
-        ).containsMatchIn(processedText)
 
         // Must explicitly mention level OR an action that implies setting
         val isLevelContext = Regex(
             "\\b(level|lvl|set|change|adjust)\\b"
         ).containsMatchIn(processedText)
 
-        return if (isBrightnessContext && isLevelContext) {
+        return if (isLevelContext) {
             level
         } else {
             null
@@ -1520,7 +1541,7 @@ class SlotExtractor {
     
     private fun extractFeature(text: String): String? {
         val features = mapOf(
-            "do not disturb" to "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
+            "do not disturb" to "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s+nd\\s+d|d\\s+n\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|dee\\s+and\\s+dee|dee\\s+nd\\s+dee|dee\\s+n\\s+dee|dee\\s+en\\s+dee|d\\s+en\\s+d|the\\s+nd|the\\s+n\\s+the|the\\s+and\\s+the|the\\s*&\\s*the|the\\s+nd\\s+the|the\\s+en\\s+the|the\\s+n\\s+d|d\\s+n\\s+the|the\\s+and\\s+d|d\\s+and\\s+the|the\\s+nd\\s+d|d\\s+nd\\s+the|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
             
             "AOD" to "\\b(?:AOD|aod|a\\.?o\\.?d\\.?|always\\s+on\\s+display|always-on\\s+display|always\\s+on|screen\\s+always\\s+on|display\\s+always\\s+on|persistent\\s+display|constant\\s+display|continuous\\s+display|keep\\s+screen\\s+on|screen\\s+stays\\s+on|display\\s+on|ambient\\s+display|glance\\s+screen|standby\\s+screen)\\b",
             
@@ -1558,7 +1579,7 @@ class SlotExtractor {
     private fun extractState(text: String): String? {
         return when {
             // ON state - expanded with 20+ variations
-            text.contains("\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|wake\\s+up|light\\s+up|flip\\s+on|on)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "on"
+            text.contains("\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|light\\s+up|flip\\s+on|on)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "on"
             
             // OFF state - expanded with 20+ variations
             text.contains("\\b(?:turn\\s+off|disable|disabled|disabling|deactivate|deactivated|deactivating|switch\\s+off|stop|stopped|stopping|shut\\s+off|shut\\s+down|power\\s+off|kill|close|mute|muted|pause|paused|block|deny|disengage|disengaged|disengaging|set\\s+off|put\\s+off|make\\s+it\\s+off|get\\s+it\\s+off|bring\\s+down|sleep|suspend|flip\\s+off|cut\\s+off|off)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "off"
@@ -2123,7 +2144,7 @@ class SlotExtractor {
             
             "heart rate" to "\\b(?:heart\\s+rate|heartrate|heart\\s+beat|heartbeat|pulse|pulse\\s+rate|bpm|beats\\s+per\\s+minute|cardiac|cardiac\\s+rate|heart\\s+rhythm|resting\\s+heart\\s+rate|rhr|max\\s+heart\\s+rate|maximum\\s+heart\\s+rate|heart\\s+health|cardiovascular|cardio|ticker|heart\\s+monitor|heart\\s+sensor|hr|beat|beats|beating|palpitation|palpitations|tachycardia|bradycardia|heart\\s+zone|target\\s+heart\\s+rate|recovery\\s+heart\\s+rate)\\b",
             
-            "blood oxygen" to "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
+            "blood oxygen" to "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|sp\\s+o\\s+2|s\\s+p\\s+o2|s\\s+p\\s+o\\s+2|spo|sp\\s+o|s\\s+p\\s+o|spo\\s+level|spo\\s+levels|sp\\s+o\\s+level|sp\\s+o\\s+levels|s\\s+p\\s+o\\s+level|s\\s+p\\s+o\\s+levels|spo\\s+to|sp\\s+o\\s+to|spo\\s+too|sp\\s+o\\s+too|s\\s+p\\s+o\\s+to|s\\s+p\\s+o\\s+too|sp2|sp\\s+2|s\\s+p\\s+2|spo2\\s+level|spo2\\s+levels|sp\\s+o2\\s+level|sp\\s+o2\\s+levels|spo\\s+to\\s+level|spo\\s+to\\s+levels|sp\\s+o\\s+to\\s+level|sp\\s+o\\s+to\\s+levels|spo\\s+too\\s+level|spo\\s+too\\s+levels|sp\\s+o\\s+too\\s+level|sp\\s+o\\s+too\\s+levels|s\\s+p\\s+o\\s+2\\s+level|s\\s+p\\s+o\\s+2\\s+levels|s\\s+p\\s+o\\s+to\\s+level|s\\s+p\\s+o\\s+to\\s+levels|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
             
             "stress" to "\\b(?:stress|stressed|stressful|stress\\s+level|stress\\s+score|stress\\s+index|anxiety|anxious|worried|worry|worrying|tension|tense|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|burnt\\s+out|mental\\s+stress|emotional\\s+stress|psychological\\s+stress|chronic\\s+stress|acute\\s+stress|relaxation|relax|calm|calmness|peace|peaceful|tranquil|serene|zen|mindfulness)\\b",
 
@@ -2608,15 +2629,19 @@ class SlotExtractor {
                     }
                 }
                 // Extract level for brightness control when action="level" or no action keywords
+                Log.d(LOG_TAG, "  Contextual slot extraction for OpenApp - initial slots: $slots")
                 if (!slots.containsKey("level")) {
                     val app = slots["app"] as? String
                     val action = slots["action"] as? String
+                    Log.d(LOG_TAG, "  Checking if we can extract level for brightness - app: $app, action: $action")
                     if (app == "brightness") {
                         // Extract level if action is "level" or if no action-based keywords detected
-                        if (action == "level") {
+                        if (action == "level" || action == "increase" || action == "decrease") {
                             val level = extractLevel(text)
+                            Log.d(LOG_TAG, "  Extracted level for brightness with action=$action: $level")
                             if (level != null) {
                                 slots["level"] = level
+                                slots["action"] = "level" // Override action to "level" if we extracted a level value
                                 Log.d(LOG_TAG, "  ✓ Extracted brightness level: $level")
                             }
                         }

@@ -2000,6 +2000,22 @@
     }
   },
   {
+    "text": "turn off race to wake",
+    "intent": "ToggleFeature",
+    "slots": {
+      "feature": "raise to wake",
+      "state": "off"
+    }
+  },
+  {
+    "text": "turn on race to wake",
+    "intent": "ToggleFeature",
+    "slots": {
+      "feature": "raise to wake",
+      "state": "on"
+    }
+  },
+  {
     "text": "weather update Tuesday",
     "intent": "WeatherQuery",
     "slots": {
@@ -20994,6 +21010,42 @@
       "app": "settings",
       "action": "increase",
       "target": "brightness"
+    }
+  },
+  {
+    "text": "increase brightness to 100%",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "brightness",
+      "action": "level",
+      "level": "5"
+    }
+  },
+  {
+    "text": "decrease brightness to 80%",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "brightness",
+      "action": "level",
+      "level": "4"
+    }
+  },
+  {
+    "text": "set brightness to level 3",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "brightness",
+      "action": "level",
+      "level": "3"
+    }
+  },
+  {
+    "text": "change brightness to level 4",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "brightness",
+      "action": "level",
+      "level": "4"
     }
   },
   {

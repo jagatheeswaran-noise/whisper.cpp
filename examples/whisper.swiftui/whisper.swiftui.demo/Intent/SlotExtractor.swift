@@ -287,6 +287,10 @@ class SlotExtractor {
         "spo2": [
             "spo2", "sp o2", "sp o 2", "s p o 2", "s p o2", "sp2", "sp 2", "s p 2",
             "spo to", "sp o to", "spo too", "sp o too", "s p o to", "s p o too",
+            "spo2 level", "spo2 levels", "sp o2 level", "sp o2 levels",
+            "spo to level", "spo to levels", "sp o to level", "sp o to levels",
+            "spo too level", "spo too levels", "sp o too level", "sp o too levels",
+            "s p o 2 level", "s p o 2 levels", "s p o to level", "s p o to levels",
             "oxygen", "blood oxygen", "o2", "o 2", "saturation", "oxygen saturation",
             "oxygen level", "oxygen levels", "o2 sat", "o 2 sat", "blood o2", "blood o 2",
             "oxygen sat", "pulse ox", "pulse oximetry", "oximeter", "oxygen reading",
@@ -1103,7 +1107,37 @@ class SlotExtractor {
     private func extractLevel(text: String) -> Int? {
         let processedText = convertWordToNumber(text.lowercased())
         
-        // Must contain a number
+        // First check for percentage pattern (e.g., "80%", "80 percent", "80 %")
+        if let percentageRegex = try? NSRegularExpression(pattern: "(\\d+)\\s*(%|percent)"),
+           let percentageMatch = percentageRegex.firstMatch(in: processedText, range: NSRange(processedText.startIndex..., in: processedText)),
+           let percentageRange = Range(percentageMatch.range(at: 1), in: processedText),
+           let percentage = Int(String(processedText[percentageRange])) {
+            
+            // Map percentage to levels 1-5 with rounding
+            // 0-30% → Level 1 (rounds to 20%)
+            // 31-50% → Level 2 (rounds to 40%)
+            // 51-70% → Level 3 (rounds to 60%)
+            // 71-90% → Level 4 (rounds to 80%)
+            // 91-100% → Level 5 (rounds to 100%)
+            let level: Int
+            switch percentage {
+            case 0...30:
+                level = 1
+            case 31...50:
+                level = 2
+            case 51...70:
+                level = 3
+            case 71...90:
+                level = 4
+            default:
+                level = 5
+            }
+            
+            print("[SlotExtractor] extractLevel - Percentage detected: \(percentage)% -> Level \(level)")
+            return level
+        }
+        
+        // Fallback: check for explicit level number
         guard let numberRegex = try? NSRegularExpression(pattern: "\\b(\\d+)\\b"),
               let numberMatch = numberRegex.firstMatch(in: processedText, range: NSRange(processedText.startIndex..., in: processedText)),
               let numberRange = Range(numberMatch.range(at: 1), in: processedText),
@@ -1111,13 +1145,14 @@ class SlotExtractor {
             return nil
         }
         
-        // Must be brightness-related
-        let isBrightnessContext = processedText.range(of: "\\b(brightness|bright)\\b", options: .regularExpression) != nil
-        
         // Must explicitly mention level OR an action that implies setting
         let isLevelContext = processedText.range(of: "\\b(level|lvl|set|change|adjust)\\b", options: .regularExpression) != nil
         
-        return (isBrightnessContext && isLevelContext) ? level : nil
+        if isLevelContext {
+            return level
+        } else {
+            return nil
+        }
     }
     
     /// Normalizes various time formats to 24-hour HH:MM format
@@ -1611,7 +1646,7 @@ class SlotExtractor {
     
     private func extractFeature(text: String) -> String? {
         let features: [String: String] = [
-            "do not disturb": "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
+            "do not disturb": "\\b(?:do\\s+not\\s+disturb|dnd|d\\.?n\\.?d\\.?|d\\s+and\\s+d|d\\s+nd\\s+d|d\\s+n\\s+d|d\\s*&\\s*d|d\\s*n\\s*d|dee\\s+and\\s+dee|dee\\s+nd\\s+dee|dee\\s+n\\s+dee|dee\\s+en\\s+dee|d\\s+en\\s+d|the\\s+nd|the\\s+n\\s+the|the\\s+and\\s+the|the\\s*&\\s*the|the\\s+nd\\s+the|the\\s+en\\s+the|the\\s+n\\s+d|d\\s+n\\s+the|the\\s+and\\s+d|d\\s+and\\s+the|the\\s+nd\\s+d|d\\s+nd\\s+the|silent\\s+mode|silence|quiet\\s+mode|mute|muted|no\\s+disturb|don'?t\\s+disturb|silence\\s+notifications?|quiet\\s+hours?|focus\\s+mode|zen\\s+mode|peaceful\\s+mode|undisturbed|interruption\\s+free|notification\\s+silence)\\b",
             "AOD": "\\b(?:AOD|aod|a\\.?o\\.?d\\.?|always\\s+on\\s+display|always-on\\s+display|always\\s+on|screen\\s+always\\s+on|display\\s+always\\s+on|persistent\\s+display|constant\\s+display|continuous\\s+display|keep\\s+screen\\s+on|screen\\s+stays\\s+on|display\\s+on|ambient\\s+display|glance\\s+screen|standby\\s+screen)\\b",
             "raise to wake": "\\b(?:(?:raise|raised|race|rice)\\s+to\\s+wake|lift\\s+to\\s+wake|tap\\s+to\\s+wake|double\\s+tap\\s+to\\s+wake|touch\\s+to\\s+wake|wrist\\s+(?:raise|raised|race|rice)|(?:raise|raised|race|rice)\\s+wrist|lift\\s+wrist|wake\\s+on\\s+(?:raise|raised|race|rice)|wake\\s+on\\s+lift|wake\\s+on\\s+tap|wake\\s+on\\s+touch|pick\\s+up\\s+to\\s+wake|gesture\\s+wake|motion\\s+wake|tilt\\s+to\\s+wake|wake\\s+gesture|screen\\s+wake|auto\\s+wake|smart\\s+wake)\\b",
             "vibration": "\\b(?:vibration|vibrate|vibrating|haptic|haptics|buzz|buzzing|rumble|rumbling|tactile|tactile\\s+feedback|vibration\\s+feedback|motor|vibration\\s+motor|shake|shaking|pulse|pulsing|vibe|vibes|vibrate\\s+mode|silent\\s+vibrate|ring\\s+vibrate)\\b",
@@ -1635,7 +1670,7 @@ class SlotExtractor {
     
     
     private func extractState(text: String) -> String? {
-        if text.range(of: "\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|wake\\s+up|light\\s+up|flip\\s+on|on)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
+        if text.range(of: "\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|light\\s+up|flip\\s+on|on)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
             return "on"
         }
         
@@ -2200,7 +2235,7 @@ class SlotExtractor {
     private func extractApp(text: String) -> String? {
         let apps: [String: String] = [
             "heart rate": "\\b(?:heart\\s+rate|heartrate|heart\\s+beat|heartbeat|pulse|pulse\\s+rate|bpm|beats\\s+per\\s+minute|cardiac|cardiac\\s+rate|heart\\s+rhythm|resting\\s+heart\\s+rate|rhr|max\\s+heart\\s+rate|maximum\\s+heart\\s+rate|heart\\s+health|cardiovascular|cardio|ticker|heart\\s+monitor|heart\\s+sensor|hr|beat|beats|beating|palpitation|palpitations|tachycardia|bradycardia|heart\\s+zone|target\\s+heart\\s+rate|recovery\\s+heart\\s+rate)\\b",
-            "blood oxygen": "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
+            "blood oxygen": "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|sp\\s+o\\s+2|s\\s+p\\s+o2|s\\s+p\\s+o\\s+2|spo|sp\\s+o|s\\s+p\\s+o|spo\\s+level|spo\\s+levels|sp\\s+o\\s+level|sp\\s+o\\s+levels|s\\s+p\\s+o\\s+level|s\\s+p\\s+o\\s+levels|spo\\s+to|sp\\s+o\\s+to|spo\\s+too|sp\\s+o\\s+too|s\\s+p\\s+o\\s+to|s\\s+p\\s+o\\s+too|sp2|sp\\s+2|s\\s+p\\s+2|spo2\\s+level|spo2\\s+levels|sp\\s+o2\\s+level|sp\\s+o2\\s+levels|spo\\s+to\\s+level|spo\\s+to\\s+levels|sp\\s+o\\s+to\\s+level|sp\\s+o\\s+to\\s+levels|spo\\s+too\\s+level|spo\\s+too\\s+levels|sp\\s+o\\s+too\\s+level|sp\\s+o\\s+too\\s+levels|s\\s+p\\s+o\\s+2\\s+level|s\\s+p\\s+o\\s+2\\s+levels|s\\s+p\\s+o\\s+to\\s+level|s\\s+p\\s+o\\s+to\\s+levels|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
             "stress": "\\b(?:stress|stressed|stressful|stress\\s+level|stress\\s+score|stress\\s+index|anxiety|anxious|worried|worry|worrying|tension|tense|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|burnt\\s+out|mental\\s+stress|emotional\\s+stress|psychological\\s+stress|chronic\\s+stress|acute\\s+stress|relaxation|relax|calm|calmness|peace|peaceful|tranquil|serene|zen|mindfulness)\\b",
             "brightness": "\\b(?:brightness|bright|brighter|brighten|brightening|screen\\s+brightness|display\\s+brightness|luminosity|luminance|backlight|screen\\s+light|light\\s+level|dim|dimmer|dimming|dimness|darken|darker|darkening|auto\\s+brightness|adaptive\\s+brightness|brightness\\s+level|screen\\s+intensity|display\\s+intensity|illumination|illuminate|glow|glowing|radiance|light\\s+output|ambient\\s+light|screen\\s+glow|visibility|contrast|gamma|exposure|luminous)\\b",
             "cycle tracking": "\\b(?:cycle\\s+tracking|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health)\\b",
