@@ -2150,7 +2150,7 @@ class SlotExtractor {
 
             "brightness" to "\\b(?:brightness|bright|brighter|brighten|brightening|screen\\s+brightness|display\\s+brightness|luminosity|luminance|backlight|screen\\s+light|light\\s+level|dim|dimmer|dimming|dimness|darken|darker|darkening|auto\\s+brightness|adaptive\\s+brightness|brightness\\s+level|screen\\s+intensity|display\\s+intensity|illumination|illuminate|glow|glowing|radiance|light\\s+output|ambient\\s+light|screen\\s+glow|visibility|contrast|gamma|exposure|luminous)\\b",
             
-            "cycle tracking" to "\\b(?:cycle\\s+tracking|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health)\\b",
+            "cycle tracking" to "\\b(?:cycle\\s+tracking|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health|periods?\\s+(?:due|coming)|next\\s+(?:cycle|period)|track\\s+(?:my\\s+)?(?:menstrual\\s+)?cycle|check\\s+(?:my\\s+)?period|when\\s+(?:is|will)\\s+(?:my\\s+)?periods?)\\b",
             
             "activity rings" to "\\b(?:activity\\s+rings|activity\\s+ring|rings|move\\s+ring|exercise\\s+ring|stand\\s+ring|daily\\s+rings|close\\s+rings|ring\\s+progress|ring\\s+goal|activity\\s+circles|activity\\s+goals|daily\\s+goals|fitness\\s+rings|move\\s+goal|stand\\s+goal|exercise\\s+goal)\\b",
             

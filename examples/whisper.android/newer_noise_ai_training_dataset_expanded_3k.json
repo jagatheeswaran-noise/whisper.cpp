@@ -21187,6 +21187,48 @@
     }
   },
   {
+    "text": "Open cycle tracking",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
+    "text": "when is my periods due",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
+    "text": "when will my periods be coming",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
+    "text": "check my period",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
+    "text": "when is my next cycle",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
+    "text": "track my menstrual cycle",
+    "intent": "OpenApp",
+    "slots": {
+      "app": "cycle tracking"
+    }
+  },
+  {
     "text": "can you reduce brightness",
     "intent": "OpenApp",
     "slots": {
