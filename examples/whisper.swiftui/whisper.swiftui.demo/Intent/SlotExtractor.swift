@@ -214,15 +214,15 @@ class SlotExtractor {
     
     private let metricSynonyms: [String: [String]] = [
         "steps": [
-            "steps", "step", "walk", "walked", "walking", "footsteps", "pace", "stride",
-            "tread", "footfall", "gait", "paces", "stroll", "strolling", "strolled",
+            "steps", "step", "footsteps", "stride",
+            "gait", "paces", "stroll", "strolling", "strolled",
             "amble", "ambling", "saunter", "march", "marching", "trudge", "hike",
             "hiking", "trek", "wander", "movement", "activity", "moves"
         ],
         "distance": [
-            "distance", "walked", "walk", "miles", "kilometers", "km", "far", "meter",
+            "distance", "miles", "kilometers", "km", "far", "meter",
             "metres", "meters", "travelled", "traveled", "covered", "journey", "range",
-            "length", "span", "route", "path", "mileage", "odometer", "how far",
+            "length", "span", "route", "path", "mileage", "odometer",
             "feet", "yards"
         ],
         "calories": [
@@ -864,24 +864,29 @@ class SlotExtractor {
         }
         
         if distanceRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
-            return "distance"
+            return "km"
         }
         
         if caloriesRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
             return "kcal"
         }
         
+        if stepsUnitRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
+            return "count"
+        }
+
         if walkingMovementRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
-            return "distance"
+            if distanceRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
+                return "km"
+            }else {
+                return "count"
+            }
         }
         
         if weightUnitRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
             return "kg"
         }
         
-        if stepsUnitRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
-            return "count"
-        }
         
         if standingRegex.numberOfMatches(in: text, options: [], range: NSRange(location: 0, length: text.count)) > 0 {
             return "hours"
@@ -2859,21 +2864,20 @@ class SlotExtractor {
         // Pre-compiled regex patterns for better performance
         let inferencePatterns: [String: [String]] = [
             "distance": [
-                "\\bhow\\s+long\\s+(?:did\\s+)?(?:I\\s+)?(?:walk|run|hike|jog|cycle|bike|swim|travel)\\b",
+                "\\bhow\\s+long\\s+(?:did\\s+)?(?:I\\s+)?(?:walk|travel)\\b",
                 "\\bhow\\s+(?:much|many)\\s+distance\\b",
                 "\\bhow\\s+far\\b",
                 "\\bdistance.*(?:walk|walked)\\b",
-                "\\bhow\\s+(?:much|many).*distance.*(?:walk|walked|run|ran|travel|travelled|traveled|cover|covered)\\b",
+                "\\bhow\\s+(?:much|many).*distance.*(?:walk|walked|travel|travelled|traveled|cover|covered)\\b",
                 "\\b(?:walk|walked|walking)\\s+(?:distance|far)\\b",
                 "\\bkilometers?\\b|\\bmiles?\\b|\\bkm\\b",
                 "\\btravelled?|traveled|covered|journey|route|path\\b"
             ],
             "steps": [
-                "\\b(?:walk|walked|walking)\\b(?!\\s+distance)",
-                "\\bhow\\s+(?:much|many)(?!.*(?:distance|long)).*(?:walk|walked)\\b",
-                "\\bsteps?\\b",
-                "\\bpace|paces|stride|strides|footsteps?\\b",
-                "\\bmove|moved|movement|activity\\b"
+                "\\bhow\\s+(?:much|many)(?!.*(?:steps?|footsteps?)).*(?:walk|walked)\\b",
+                "\\bsteps?\\b|\\bfootsteps?\\b|\\bfoot\\s+steps?\\b",
+                "\\b(?:count|counting|total|number).*(?:steps?|walk)\\b",
+                "\\bstep\\s+(?:count|counter|goal|target|total)\\b"
             ],
             "heart rate": [
                 "\\bheart\\s+rate\\b|\\bheartrate\\b|\\bpulse\\b|\\bhr\\b|\\bbpm\\b",
