@@ -555,7 +555,10 @@ class SlotExtractor {
         Self.logger.info("🎯 Final slots: \(slots) (confidence: \(String(format: "%.2f", confidence)))")
         
         return SlotExtractionResult(slots: slots, confidence: confidence)
-    }    private func preprocessText(_ text: String) -> String {
+    }
+
+    
+    private func preprocessText(_ text: String) -> String {
         var processed = text
         
         // Normalize common variations (from Python implementation)
@@ -2749,6 +2752,33 @@ class SlotExtractor {
             }
             
         case "LogEvent":
+            // Extract event_type if not already present
+            if slots["event_type"] == nil {
+                if let eventType = extractEventType(text: text) {
+                    slots["event_type"] = eventType
+                }
+            }
+            
+            // Check if this is period/menstrual cycle related
+            if let eventType = slots["event_type"] as? String, eventType == "menstrual_cycle" {
+                // Extract period-related data
+                let periodDate = extractPeriodDate(text: text)
+                let periodLength = extractPeriodLength(text: text)
+                let cycleLength = extractMenstrualCycleLength(text: text)
+                
+                if let periodDate = periodDate {
+                    slots["type"] = "period_date"
+                    slots["value"] = periodDate
+                } else if let periodLength = periodLength {
+                    slots["type"] = "period_length"
+                    slots["value"] = periodLength
+                } else if let cycleLength = cycleLength {
+                    slots["type"] = "menstrual_cycle_length"
+                    slots["value"] = cycleLength
+                }
+            }
+            
+            
             // Add default value and unit for weight logging
             if slots["value"] == nil && slots["event_type"] as? String == "weight" {
                 // Try to extract weight value again with more patterns
@@ -3019,6 +3049,136 @@ class SlotExtractor {
             for pattern in patterns {
                 if text.range(of: pattern, options: .regularExpression) != nil {
                     return metric
+                }
+            }
+        }
+        
+        return nil
+    }
+
+    
+    private func extractPeriodDate(text: String) -> String? {
+        let calendar = Calendar.current
+        let currentYear = String(calendar.component(.year, from: Date())) // Default year
+        let textLower = text.lowercased()
+        
+        // Month name to number mapping
+        let monthMap: [String: String] = [
+            "january": "01", "jan": "01",
+            "february": "02", "feb": "02",
+            "march": "03", "mar": "03",
+            "april": "04", "apr": "04",
+            "may": "05",
+            "june": "06", "jun": "06",
+            "july": "07", "jul": "07",
+            "august": "08", "aug": "08",
+            "september": "09", "sep": "09", "sept": "09",
+            "october": "10", "oct": "10",
+            "november": "11", "nov": "11",
+            "december": "12", "dec": "12"
+        ]
+        
+        // Pattern 1: Numeric dates with separators (12/03/2026, 12-03-2026, 12.03.2026)
+        let numericPattern = "\\b(\\d{1,2})[/\\-\\.](\\d{1,2})[/\\-\\.](\\d{4})\\b"
+        if let match = text.range(of: numericPattern, options: .regularExpression),
+           let regex = try? NSRegularExpression(pattern: numericPattern) {
+            let nsString = text as NSString
+            let result = regex.firstMatch(in: text, range: NSRange(location: 0, length: nsString.length))
+            if let result = result {
+                let day = String(format: "%02d", Int(nsString.substring(with: result.range(at: 1))) ?? 0)
+                let month = String(format: "%02d", Int(nsString.substring(with: result.range(at: 2))) ?? 0)
+                let year = nsString.substring(with: result.range(at: 3))
+                return "\(day)/\(month)/\(year)"
+            }
+        }
+        
+        // Pattern 2: "12th of march 2026" or "12th of march" (day first with "of")
+        let dayOfMonthPattern = "\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+of\\s+(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:\\s+(\\d{4}))?\\b"
+        if let regex = try? NSRegularExpression(pattern: dayOfMonthPattern, options: .caseInsensitive) {
+            let nsString = textLower as NSString
+            if let result = regex.firstMatch(in: textLower, range: NSRange(location: 0, length: nsString.length)) {
+                let day = String(format: "%02d", Int(nsString.substring(with: result.range(at: 1))) ?? 0)
+                let monthName = nsString.substring(with: result.range(at: 2)).lowercased()
+                guard let month = monthMap[monthName] else { return nil }
+                let year = result.range(at: 3).location != NSNotFound
+                    ? nsString.substring(with: result.range(at: 3))
+                    : currentYear
+                return "\(day)/\(month)/\(year)"
+            }
+        }
+        
+        // Pattern 3: "12th march 2026" or "12th march" (day first without "of")
+        let dayMonthPattern = "\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:\\s+(\\d{4}))?\\b"
+        if let regex = try? NSRegularExpression(pattern: dayMonthPattern, options: .caseInsensitive) {
+            let nsString = textLower as NSString
+            if let result = regex.firstMatch(in: textLower, range: NSRange(location: 0, length: nsString.length)) {
+                let day = String(format: "%02d", Int(nsString.substring(with: result.range(at: 1))) ?? 0)
+                let monthName = nsString.substring(with: result.range(at: 2)).lowercased()
+                guard let month = monthMap[monthName] else { return nil }
+                let year = result.range(at: 3).location != NSNotFound
+                    ? nsString.substring(with: result.range(at: 3))
+                    : currentYear
+                return "\(day)/\(month)/\(year)"
+            }
+        }
+        
+        // Pattern 4: "march 12th 2026" or "march 12" (month first)
+        let monthDayPattern = "\\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(\\d{4}))?\\b"
+        if let regex = try? NSRegularExpression(pattern: monthDayPattern, options: .caseInsensitive) {
+            let nsString = textLower as NSString
+            if let result = regex.firstMatch(in: textLower, range: NSRange(location: 0, length: nsString.length)) {
+                let monthName = nsString.substring(with: result.range(at: 1)).lowercased()
+                guard let month = monthMap[monthName] else { return nil }
+                let day = String(format: "%02d", Int(nsString.substring(with: result.range(at: 2))) ?? 0)
+                let year = result.range(at: 3).location != NSNotFound
+                    ? nsString.substring(with: result.range(at: 3))
+                    : currentYear
+                return "\(day)/\(month)/\(year)"
+            }
+        }
+        
+        return nil
+    }
+    
+    // Extract period length from text (in days)
+    private func extractPeriodLength(text: String) -> String? {
+        // Pattern to match "period length as 5 days", "period length of 5 days", "period lasted 5 days"
+        let periodLengthPatterns = [
+            "\\bperiod\\s+(?:length|lasting|lasted|duration)\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\bperiod\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+period\\b",
+            "\\bperiod\\s+for\\s+(\\d+)\\s*days?\\b",
+            "\\bperiod\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
+        ]
+        
+        for pattern in periodLengthPatterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let nsString = text as NSString
+                if let result = regex.firstMatch(in: text, range: NSRange(location: 0, length: nsString.length)) {
+                    return nsString.substring(with: result.range(at: 1))
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    // Extract menstrual cycle length from text (in days)
+    private func extractMenstrualCycleLength(text: String) -> String? {
+        // Pattern to match "cycle length as 28 days", "cycle is 28 days long", "28 day cycle"
+        let cycleLengthPatterns = [
+            "\\bcycle\\s+(?:length|lasting|is|was)?\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+cycle\\b",
+            "\\bcycle\\s+of\\s+(\\d+)\\s*days?\\b",
+            "\\bmenstrual\\s+cycle\\s+(?:length|is|was)?\\s+(?:as|of)?\\s*(\\d+)\\s*days?\\b",
+            "\\bcycle\\s+length\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b"
+        ]
+        
+        for pattern in cycleLengthPatterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let nsString = text as NSString
+                if let result = regex.firstMatch(in: text, range: NSRange(location: 0, length: nsString.length)) {
+                    return nsString.substring(with: result.range(at: 1))
                 }
             }
         }

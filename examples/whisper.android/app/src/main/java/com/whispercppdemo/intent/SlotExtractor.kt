@@ -2383,7 +2383,7 @@ class SlotExtractor {
             text.contains("\\b(?:weight|weigh|weighing|weighed|kg|kgs|kilogram|kilograms|kilogramme|kilogrammes|kilo|kilos|pounds?|lbs?|lb|body\\s+weight|body\\s+mass|mass|scale|scales|weighing\\s+scale|weight\\s+scale|heavy|heaviness|light|lightness|bmi|body\\s+mass\\s+index|stone|st|grams?|grammes?|g|ounces?|oz|#)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "weight"
             
             // Menstrual cycle - expanded with 20+ variations
-            text.contains("\\b(?:menstrual|menstruation|menstruating|menstruate|period|periods|cycle|cycles|monthly\\s+cycle|time\\s+of\\s+month|that\\s+time|aunt\\s+flo|flow|bleeding|spotting|pms|premenstrual|ovulation|ovulating|ovulate|fertile|fertility|fertility\\s+window|luteal\\s+phase|follicular\\s+phase|cramping|cramps|menses|feminine\\s+hygiene|menstrual\\s+health|reproductive\\s+cycle)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "menstrual cycle"
+            text.contains("\\b(?:menstrual|menstruation|menstruating|menstruate|period|periods|cycle|cycles|monthly\\s+cycle|time\\s+of\\s+month|that\\s+time|aunt\\s+flo|flow|bleeding|spotting|pms|premenstrual|ovulation|ovulating|ovulate|fertile|fertility|fertility\\s+window|luteal\\s+phase|follicular\\s+phase|cramping|cramps|menses|feminine\\s+hygiene|menstrual\\s+health|reproductive\\s+cycle)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "menstrual_cycle"
             
             else -> null
         }
@@ -2586,22 +2586,28 @@ class SlotExtractor {
                         slots["event_type"] = eventType
                     }
                 }
-                if (!slots.containsKey("value")) {
-                    val value = extractValue(text, intent)
-                    if (value != null) {
-                        slots["value"] = value
+                
+                // Check if this is period/menstrual cycle related
+                val eventType = slots["event_type"] as? String
+                if (eventType == "menstrual_cycle") {
+                    // Extract period-related data
+                    val periodDate = extractPeriodDate(text)
+                    val periodLength = extractPeriodLength(text)
+                    val cycleLength = extractMenstrualCycleLength(text)
+                    
+                    if (periodDate != null) {
+                        slots["type"] = "period_date"
+                        slots["value"] = periodDate
                     }
-                }
-                if (!slots.containsKey("unit")) {
-                    val unit = extractUnit(text)
-                    if (unit != null) {
-                        slots["unit"] = unit
+                    else if (periodLength != null){
+                        slots["type"] = "period_length"
+                        slots["value"] = periodLength
                     }
-                }
-                if (!slots.containsKey("time_ref")) {
-                    val timeRef = extractTimeRef(text) ?: "today"
-                    slots["time_ref"] = timeRef
-                }
+                    else if (cycleLength != null) {
+                        slots["type"] = "menstrual_cycle_length"
+                        slots["value"] = cycleLength
+                    }
+                } 
             }
             "StartActivity", "StopActivity" -> {
                 if (!slots.containsKey("activity_type")) {
@@ -2723,6 +2729,113 @@ class SlotExtractor {
                 }
             }
         }
+    }
+    
+    // Extract period date from text (format: DD/MM/YYYY or variations)
+    private fun extractPeriodDate(text: String): String? {
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString() // Default year
+        val textLower = text.lowercase(Locale.getDefault())
+        
+        // Month name to number mapping
+        val monthMap = mapOf(
+            "january" to "01", "jan" to "01",
+            "february" to "02", "feb" to "02",
+            "march" to "03", "mar" to "03",
+            "april" to "04", "apr" to "04",
+            "may" to "05",
+            "june" to "06", "jun" to "06",
+            "july" to "07", "jul" to "07",
+            "august" to "08", "aug" to "08",
+            "september" to "09", "sep" to "09", "sept" to "09",
+            "october" to "10", "oct" to "10",
+            "november" to "11", "nov" to "11",
+            "december" to "12", "dec" to "12"
+        )
+        
+        // Pattern 1: Numeric dates with separators (12/03/2026, 12-03-2026, 12.03.2026)
+        val numericPattern = "\\b(\\d{1,2})[/\\-\\.](\\d{1,2})[/\\-\\.](\\d{4})\\b".toRegex()
+        numericPattern.find(text)?.let { match ->
+            val day = match.groupValues[1].padStart(2, '0')
+            val month = match.groupValues[2].padStart(2, '0')
+            val year = match.groupValues[3]
+            return "$day/$month/$year"
+        }
+        
+        // Pattern 2: "12th of march 2026" or "12th of march" (day first with "of")
+        val dayOfMonthPattern = "\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+of\\s+(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:\\s+(\\d{4}))?\\b".toRegex(RegexOption.IGNORE_CASE)
+        dayOfMonthPattern.find(textLower)?.let { match ->
+            val day = match.groupValues[1].padStart(2, '0')
+            val monthName = match.groupValues[2].lowercase()
+            val month = monthMap[monthName] ?: return null
+            val year = match.groupValues[3].ifEmpty { currentYear }
+            return "$day/$month/$year"
+        }
+        
+        // Pattern 3: "12th march 2026" or "12th march" (day first without "of")
+        val dayMonthPattern = "\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:\\s+(\\d{4}))?\\b".toRegex(RegexOption.IGNORE_CASE)
+        dayMonthPattern.find(textLower)?.let { match ->
+            val day = match.groupValues[1].padStart(2, '0')
+            val monthName = match.groupValues[2].lowercase()
+            val month = monthMap[monthName] ?: return null
+            val year = match.groupValues[3].ifEmpty { currentYear }
+            return "$day/$month/$year"
+        }
+        
+        // Pattern 4: "march 12th 2026" or "march 12" (month first)
+        val monthDayPattern = "\\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(\\d{4}))?\\b".toRegex(RegexOption.IGNORE_CASE)
+        monthDayPattern.find(textLower)?.let { match ->
+            val monthName = match.groupValues[1].lowercase()
+            val month = monthMap[monthName] ?: return null
+            val day = match.groupValues[2].padStart(2, '0')
+            val year = match.groupValues[3].ifEmpty { currentYear }
+            return "$day/$month/$year"
+        }
+        
+        return null
+    }
+    
+    // Extract period length from text (in days)
+    private fun extractPeriodLength(text: String): String? {
+        // Pattern to match "period length as 5 days", "period length of 5 days", "period lasted 5 days"
+        val periodLengthPatterns = listOf(
+            "\\bperiod\\s+(?:length|lasting|lasted|duration)\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\bperiod\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+period\\b",
+            "\\bperiod\\s+for\\s+(\\d+)\\s*days?\\b",
+            "\\bperiod\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
+        )
+        
+        for (pattern in periodLengthPatterns) {
+            val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+            val match = regex.find(text)
+            if (match != null) {
+                return match.groupValues[1]
+            }
+        }
+        
+        return null
+    }
+    
+    // Extract menstrual cycle length from text (in days)
+    private fun extractMenstrualCycleLength(text: String): String? {
+        // Pattern to match "cycle length as 28 days", "cycle is 28 days long", "28 day cycle"
+        val cycleLengthPatterns = listOf(
+            "\\bcycle\\s+(?:length|lasting|is|was)?\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+cycle\\b",
+            "\\bcycle\\s+of\\s+(\\d+)\\s*days?\\b",
+            "\\bmenstrual\\s+cycle\\s+(?:length|is|was)?\\s+(?:as|of)?\\s*(\\d+)\\s*days?\\b",
+            "\\bcycle\\s+length\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b"
+        )
+        
+        for (pattern in cycleLengthPatterns) {
+            val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+            val match = regex.find(text)
+            if (match != null) {
+                return match.groupValues[1]
+            }
+        }
+        
+        return null
     }
     
     private fun inferMetricFromContext(text: String): String? {

@@ -22599,6 +22599,84 @@
     }
   },
   {
+    "text": "log my period length as 5 days",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "period_length": 5,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "record period length of 5 days",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "period_length": 5,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "my period lasted 5 days",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "period_length": 5,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "log cycle length as 28 days",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "menstrual cycle",
+      "cycle_length": 28,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "record my cycle length of 28 days",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "menstrual cycle",
+      "cycle_length": 28,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "my cycle is 28 days long",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "menstrual cycle",
+      "cycle_length": 28,
+      "unit": "days"
+    }
+  },
+  {
+    "text": "log last period date as 12/03/2026",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "date": "12/03/2026"
+    }
+  },
+  {
+    "text": "record last period date 12/03/2026",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "date": "12/03/2026"
+    }
+  },
+  {
+    "text": "my last period was on 12/03/2026",
+    "intent": "LogEvent",
+    "slots": {
+      "event_type": "period",
+      "date": "12/03/2026"
+    }
+  },
+  {
     "text": "is snow expected today",
     "intent": "WeatherQuery",
     "slots": {
@@ -22741,6 +22819,13 @@
     "intent": "StopActivity",
     "slots": {
       "activity": "jogging"
+    }
+  },
+  {
+    "text": "Open workout history",
+    "intent": "OpenApp",
+    "slots": {
+      "app_name": "workout history"
     }
   },
   {
