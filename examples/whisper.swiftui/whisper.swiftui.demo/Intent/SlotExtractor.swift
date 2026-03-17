@@ -1503,7 +1503,7 @@ class SlotExtractor {
             
         case "TimerStopwatch":
             // Determine if this is a timer (duration) or alarm (specific time) context
-            let isTimerContext = text.range(of: "\\b(?:timer|stopwatch|countdown|count\\s+down)\\b", options: .regularExpression) != nil
+            let isTimerContext = text.range(of: "\\b(?:timer|stopwatch|countdown|count\\s+down|time\\s+of\\s+duration|time\\s+for|for\\s+duration|time\\s+duration)\\b", options: .regularExpression) != nil
             let isAlarmContext = text.range(of: "\\b(?:alarm|wake|remind|alert)\\b", options: .regularExpression) != nil
             
             let timePatterns = [
@@ -2246,7 +2246,7 @@ class SlotExtractor {
             "blood oxygen": "\\b(?:blood\\s+oxygen|oxygen|o2|spo2|sp\\s+o2|sp\\s+o\\s+2|s\\s+p\\s+o2|s\\s+p\\s+o\\s+2|spo|sp\\s+o|s\\s+p\\s+o|spo\\s+level|spo\\s+levels|sp\\s+o\\s+level|sp\\s+o\\s+levels|s\\s+p\\s+o\\s+level|s\\s+p\\s+o\\s+levels|spo\\s+to|sp\\s+o\\s+to|spo\\s+too|sp\\s+o\\s+too|s\\s+p\\s+o\\s+to|s\\s+p\\s+o\\s+too|sp2|sp\\s+2|s\\s+p\\s+2|spo2\\s+level|spo2\\s+levels|sp\\s+o2\\s+level|sp\\s+o2\\s+levels|spo\\s+to\\s+level|spo\\s+to\\s+levels|sp\\s+o\\s+to\\s+level|sp\\s+o\\s+to\\s+levels|spo\\s+too\\s+level|spo\\s+too\\s+levels|sp\\s+o\\s+too\\s+level|sp\\s+o\\s+too\\s+levels|s\\s+p\\s+o\\s+2\\s+level|s\\s+p\\s+o\\s+2\\s+levels|s\\s+p\\s+o\\s+to\\s+level|s\\s+p\\s+o\\s+to\\s+levels|oxygen\\s+saturation|oxygen\\s+level|oxygen\\s+levels|blood\\s+o2|oxygen\\s+sat|o2\\s+sat|o2\\s+level|o2\\s+saturation|pulse\\s+ox|pulse\\s+oximetry|oximeter|oxygen\\s+reading|oxygen\\s+sensor|saturation|sat|blood\\s+oxygen\\s+level|arterial\\s+oxygen|respiratory|respiration|breathing|breath|lung\\s+function|oxygenation|hypoxia|oxygen\\s+content|sp2|SP2)\\b",
             "stress": "\\b(?:stress|stressed|stressful|stress\\s+level|stress\\s+score|stress\\s+index|anxiety|anxious|worried|worry|worrying|tension|tense|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|burnt\\s+out|mental\\s+stress|emotional\\s+stress|psychological\\s+stress|chronic\\s+stress|acute\\s+stress|relaxation|relax|calm|calmness|peace|peaceful|tranquil|serene|zen|mindfulness)\\b",
             "brightness": "\\b(?:brightness|bright|brighter|brighten|brightening|screen\\s+brightness|display\\s+brightness|luminosity|luminance|backlight|screen\\s+light|light\\s+level|dim|dimmer|dimming|dimness|darken|darker|darkening|auto\\s+brightness|adaptive\\s+brightness|brightness\\s+level|screen\\s+intensity|display\\s+intensity|illumination|illuminate|glow|glowing|radiance|light\\s+output|ambient\\s+light|screen\\s+glow|visibility|contrast|gamma|exposure|luminous)\\b",
-            "cycle tracking": "\\b(?:cycle\\s+tracking|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health|periods?\\s+(?:due|coming)|next\\s+(?:cycle|period)|track\\s+(?:my\\s+)?(?:menstrual\\s+)?cycle|check\\s+(?:my\\s+)?period|when\\s+(?:is|will)\\s+(?:my\\s+)?periods?)\\b",
+            "cycle tracking": "\\b(?:cycle\\s+tracking|cycle\\s+tracker|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health|period(?:s|'s)?\\s+(?:due|coming)|next\\s+(?:cycle|period)|track\\s+(?:my\\s+)?(?:menstrual\\s+)?cycle|check\\s+(?:my\\s+)?period|when\\s+(?:is|will)\\s+(?:my\\s+)?period(?:s|'s)?)\\b",
             "activity rings": "\\b(?:activity\\s+rings|activity\\s+ring|rings|move\\s+ring|exercise\\s+ring|stand\\s+ring|daily\\s+rings|close\\s+rings|ring\\s+progress|ring\\s+goal|activity\\s+circles|activity\\s+goals|daily\\s+goals|fitness\\s+rings|move\\s+goal|stand\\s+goal|exercise\\s+goal)\\b",
             "workout history": "\\b(?:workout\\s+history|exercise\\s+history|training\\s+history|activity\\s+history|workout\\s+log|exercise\\s+log|training\\s+log|activity\\s+log|past\\s+workouts|previous\\s+workouts|workout\\s+records|exercise\\s+records|training\\s+records|fitness\\s+history|workout\\s+data|exercise\\s+data)\\b",
             "calendar": "\\b(?:calendar|cal|schedule|agenda|planner|diary|appointments?|events?|meetings?|date|dates|day\\s+planner|time\\s+planner|organizer|scheduler|event\\s+calendar|meeting\\s+calendar|my\\s+calendar|calendar\\s+app)\\b",
@@ -2491,7 +2491,7 @@ class SlotExtractor {
         }
         
         if text.range(of: "\\b(?:menstrual|menstruation|menstruating|menstruate|period|periods|cycle|cycles|monthly\\s+cycle|time\\s+of\\s+month|that\\s+time|aunt\\s+flo|flow|bleeding|spotting|pms|premenstrual|ovulation|ovulating|ovulate|fertile|fertility|fertility\\s+window|luteal\\s+phase|follicular\\s+phase|cramping|cramps|menses|feminine\\s+hygiene|menstrual\\s+health|reproductive\\s+cycle)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
-            return "menstrual cycle"
+            return "menstrual_cycle"
         }
         
         return nil
@@ -2767,13 +2767,13 @@ class SlotExtractor {
                 let cycleLength = extractMenstrualCycleLength(text: text)
                 
                 if let periodDate = periodDate {
-                    slots["type"] = "period_date"
+                    slots["event_type"] = "period_date"
                     slots["value"] = periodDate
                 } else if let periodLength = periodLength {
-                    slots["type"] = "period_length"
+                    slots["event_type"] = "period_length"
                     slots["value"] = periodLength
                 } else if let cycleLength = cycleLength {
-                    slots["type"] = "menstrual_cycle_length"
+                    slots["event_type"] = "menstrual_cycle_length"
                     slots["value"] = cycleLength
                 }
             }
@@ -3142,19 +3142,22 @@ class SlotExtractor {
     
     // Extract period length from text (in days)
     private func extractPeriodLength(text: String) -> String? {
+
+        let processedText = convertWordToNumber(text)
+
         // Pattern to match "period length as 5 days", "period length of 5 days", "period lasted 5 days"
         let periodLengthPatterns = [
-            "\\bperiod\\s+(?:length|lasting|lasted|duration)\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
-            "\\bperiod\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
-            "\\b(\\d+)\\s*days?\\s+period\\b",
-            "\\bperiod\\s+for\\s+(\\d+)\\s*days?\\b",
-            "\\bperiod\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
+            "\\bperiod(?:s|'s)?\\s+(?:length|lasting|lasted|duration)[^\\d]*(\\d+)\\s*days?\\b",
+            "\\bperiod(?:s|'s)?\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+period(?:s|'s)?\\b",
+            "\\bperiod(?:s|'s)?\\s+for\\s+(\\d+)\\s*days?\\b",
+            "\\bperiod(?:s|'s)?\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
         ]
         
         for pattern in periodLengthPatterns {
             if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
-                let nsString = text as NSString
-                if let result = regex.firstMatch(in: text, range: NSRange(location: 0, length: nsString.length)) {
+                let nsString = processedText as NSString
+                if let result = regex.firstMatch(in: processedText, range: NSRange(location: 0, length: nsString.length)) {
                     return nsString.substring(with: result.range(at: 1))
                 }
             }
@@ -3165,19 +3168,19 @@ class SlotExtractor {
     
     // Extract menstrual cycle length from text (in days)
     private func extractMenstrualCycleLength(text: String) -> String? {
+
+        let processedText = convertWordToNumber(text)
         // Pattern to match "cycle length as 28 days", "cycle is 28 days long", "28 day cycle"
         let cycleLengthPatterns = [
-            "\\bcycle\\s+(?:length|lasting|is|was)?\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(?:menstrual\\s+)?cycle[^\\d]*(\\d+)\\s*days?\\b",
             "\\b(\\d+)\\s*days?\\s+cycle\\b",
-            "\\bcycle\\s+of\\s+(\\d+)\\s*days?\\b",
-            "\\bmenstrual\\s+cycle\\s+(?:length|is|was)?\\s+(?:as|of)?\\s*(\\d+)\\s*days?\\b",
-            "\\bcycle\\s+length\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b"
+            "\\b(\\d+)[-\\s]?day\\s+cycle\\b"
         ]
         
         for pattern in cycleLengthPatterns {
             if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
-                let nsString = text as NSString
-                if let result = regex.firstMatch(in: text, range: NSRange(location: 0, length: nsString.length)) {
+                let nsString = processedText as NSString
+                if let result = regex.firstMatch(in: processedText, range: NSRange(location: 0, length: nsString.length)) {
                     return nsString.substring(with: result.range(at: 1))
                 }
             }

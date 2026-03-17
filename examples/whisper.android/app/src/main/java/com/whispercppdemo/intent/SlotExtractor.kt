@@ -1342,7 +1342,7 @@ class SlotExtractor {
             
             "TimerStopwatch" -> {
                 // Determine if this is a timer (duration) or alarm (specific time) context
-                val isTimerContext = text.contains(Regex("\\b(?:timer|stopwatch|countdown|count\\s+down)\\b", RegexOption.IGNORE_CASE))
+                val isTimerContext = text.contains(Regex("\\b(?:timer|stopwatch|countdown|count\\s+down|time\\s+of\\s+duration|time\\s+for|for\\s+duration|time\\s+duration)\\b", RegexOption.IGNORE_CASE))
                 val isAlarmContext = text.contains(Regex("\\b(?:alarm|wake|remind|alert)\\b", RegexOption.IGNORE_CASE))
                 
                 val timePatterns = listOf(
@@ -2154,7 +2154,7 @@ class SlotExtractor {
 
             "brightness" to "\\b(?:brightness|bright|brighter|brighten|brightening|screen\\s+brightness|display\\s+brightness|luminosity|luminance|backlight|screen\\s+light|light\\s+level|dim|dimmer|dimming|dimness|darken|darker|darkening|auto\\s+brightness|adaptive\\s+brightness|brightness\\s+level|screen\\s+intensity|display\\s+intensity|illumination|illuminate|glow|glowing|radiance|light\\s+output|ambient\\s+light|screen\\s+glow|visibility|contrast|gamma|exposure|luminous)\\b",
             
-            "cycle tracking" to "\\b(?:cycle\\s+tracking|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health|periods?\\s+(?:due|coming)|next\\s+(?:cycle|period)|track\\s+(?:my\\s+)?(?:menstrual\\s+)?cycle|check\\s+(?:my\\s+)?period|when\\s+(?:is|will)\\s+(?:my\\s+)?periods?)\\b",
+            "cycle tracking" to "\\b(?:cycle\\s+tracking|cycle\\s+tracker|menstrual\\s+cycle|period\\s+tracking|period\\s+tracker|menstruation|menstrual\\s+calendar|period\\s+calendar|cycle\\s+calendar|fertility|fertility\\s+tracking|ovulation|ovulation\\s+tracking|period\\s+log|cycle\\s+log|women\\s+health|female\\s+health|reproductive\\s+health|period(?:s|'s)?\\s+(?:due|coming)|next\\s+(?:cycle|period)|track\\s+(?:my\\s+)?(?:menstrual\\s+)?cycle|check\\s+(?:my\\s+)?period|when\\s+(?:is|will)\\s+(?:my\\s+)?period(?:s|'s)?)\\b",
             
             "activity rings" to "\\b(?:activity\\s+rings|activity\\s+ring|rings|move\\s+ring|exercise\\s+ring|stand\\s+ring|daily\\s+rings|close\\s+rings|ring\\s+progress|ring\\s+goal|activity\\s+circles|activity\\s+goals|daily\\s+goals|fitness\\s+rings|move\\s+goal|stand\\s+goal|exercise\\s+goal)\\b",
             
@@ -2712,7 +2712,7 @@ class SlotExtractor {
                     }
                 }
                 if (!slots.containsKey("period")) {
-                    val period = extractPeriod(text)
+                    val period = extractPeriod(text)  ?: "today"
                     if (period != null) {
                         slots["period"] = period
                     }
@@ -2796,18 +2796,21 @@ class SlotExtractor {
     
     // Extract period length from text (in days)
     private fun extractPeriodLength(text: String): String? {
+
+        val processedText = convertWordToNumber(text)
+
         // Pattern to match "period length as 5 days", "period length of 5 days", "period lasted 5 days"
         val periodLengthPatterns = listOf(
-            "\\bperiod\\s+(?:length|lasting|lasted|duration)\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
-            "\\bperiod\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
-            "\\b(\\d+)\\s*days?\\s+period\\b",
-            "\\bperiod\\s+for\\s+(\\d+)\\s*days?\\b",
-            "\\bperiod\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
+            "\\bperiod(?:s|'s)?\\s+(?:length|lasting|lasted|duration)[^\\d]*(\\d+)\\s*days?\\b",
+            "\\bperiod(?:s|'s)?\\s+(?:is|was)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(\\d+)\\s*days?\\s+period(?:s|'s)?\\b",
+            "\\bperiod(?:s|'s)?\\s+for\\s+(\\d+)\\s*days?\\b",
+            "\\bperiod(?:s|'s)?\\s+starting.*for\\s+(\\d+)\\s*days?\\b"
         )
         
         for (pattern in periodLengthPatterns) {
             val regex = Regex(pattern, RegexOption.IGNORE_CASE)
-            val match = regex.find(text)
+            val match = regex.find(processedText)
             if (match != null) {
                 return match.groupValues[1]
             }
@@ -2818,18 +2821,17 @@ class SlotExtractor {
     
     // Extract menstrual cycle length from text (in days)
     private fun extractMenstrualCycleLength(text: String): String? {
+        val processedText = convertWordToNumber(text)
         // Pattern to match "cycle length as 28 days", "cycle is 28 days long", "28 day cycle"
         val cycleLengthPatterns = listOf(
-            "\\bcycle\\s+(?:length|lasting|is|was)?\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b",
+            "\\b(?:menstrual\\s+)?cycle[^\\d]*(\\d+)\\s*days?\\b",
             "\\b(\\d+)\\s*days?\\s+cycle\\b",
-            "\\bcycle\\s+of\\s+(\\d+)\\s*days?\\b",
-            "\\bmenstrual\\s+cycle\\s+(?:length|is|was)?\\s+(?:as|of)?\\s*(\\d+)\\s*days?\\b",
-            "\\bcycle\\s+length\\s+(?:as|of|is)?\\s*(\\d+)\\s*days?\\b"
+            "\\b(\\d+)[-\\s]?day\\s+cycle\\b"
         )
         
         for (pattern in cycleLengthPatterns) {
             val regex = Regex(pattern, RegexOption.IGNORE_CASE)
-            val match = regex.find(text)
+            val match = regex.find(processedText)
             if (match != null) {
                 return match.groupValues[1]
             }
