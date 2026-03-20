@@ -323,7 +323,8 @@ class SlotExtractor {
             "time active", "hours of activity", "hours of movement", 
             "movement hours", "movement time", "time spent active", "active duration", 
             "activity duration", "physical activity time", "physical activity hours", 
-            "daily active time", "total active time", "active minutes", 
+            "daily active time", "total active time", "active minutes", "active minute",
+            "activity minutes", "activity minute", "minutes active", "minute active",
             "active periods", "time moving", "moving time", "how active"
         ),
         "vo2" to listOf(
@@ -445,7 +446,7 @@ class SlotExtractor {
     private val weightRegex = Regex("\\b(?:weight|weigh|weighing|weighed|kg|kilogram|kilograms|pound|pounds|lbs|lb|body mass|bmi|body weight|mass|scale|heavy|light|stone|gram|grams|ounce|ounces|oz)\\b", RegexOption.IGNORE_CASE)
     private val stressRegex = Regex("\\b(?:stress|stressed|stressful|anxiety|anxious|tension|tense|worried|worry|worrying|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|mental health|relaxation|relax|calm|peace|peaceful)\\b", RegexOption.IGNORE_CASE)
     private val standingRegex = Regex("\\b(?:standing|stand|stood|upright|vertical|on feet|on my feet|stand hours|standing hours|stand time|standing time|stand goal|standing goal|stand ring|standing ring|stand activity|standing activity|stand up|stood up)\\b", RegexOption.IGNORE_CASE)
-    private val activeHoursRegex = Regex("\\b(?:active\\s+hours?|activity\\s+hours?|hours?\\s+active|active\\s+time|activity\\s+time|time\\s+active|activar'?s?|activars|hours?\\s+of\\s+activity|hours?\\s+of\\s+movement|movement\\s+hours?|time\\s+spent\\s+active|active\\s+duration|activity\\s+duration|physical\\s+activity\\s+(?:time|hours?)|daily\\s+active\\s+time|total\\s+active\\s+time|time\\s+moving|moving\\s+time)\\b", RegexOption.IGNORE_CASE)
+    private val activeHoursRegex = Regex("\\b(?:active\\s+(?:hours?|minutes?)|activity\\s+(?:hours?|minutes?)|(?:hours?|minutes?)\\s+active|active\\s+time|activity\\s+time|time\\s+active|activar'?s?|activars|(?:hours?|minutes?)\\s+of\\s+activity|(?:hours?|minutes?)\\s+of\\s+movement|movement\\s+(?:hours?|minutes?)|time\\s+spent\\s+active|active\\s+duration|activity\\s+duration|physical\\s+activity\\s+(?:time|hours?|minutes?)|daily\\s+active\\s+time|total\\s+active\\s+time|time\\s+moving|moving\\s+time)\\b", RegexOption.IGNORE_CASE)
     private val awakeRegex = Regex("\\b(?:awake|waking|woke|awaken|awakened|time\\s+awake|hours\\s+awake|awake\\s+time|waking\\s+time|wake\\s+time|time\\s+spent\\s+awake|time\\s+spent\\s+waking)\\b", RegexOption.IGNORE_CASE)
     private val vo2Regex = Regex("\\b(?:vo2|vo2\\s*max|vo2max|v\\s*o\\s*2|v\\s*o\\s*2\\s*max|vo\\s*2|vo\\s*2\\s*max|vo\\s*two|vo\\s*two\\s*max|v\\s*o\\s*two|aerobic\\s+capacity|aerobic\\s+fitness|cardio\\s+fitness|cardiovascular\\s+fitness|max\\s+oxygen|maximum\\s+oxygen|oxygen\\s+uptake|cardio\\s+capacity|endurance\\s+capacity|fitness\\s+level|aerobic\\s+power|oxygen\\s+capacity|cardiorespiratory)\\b", RegexOption.IGNORE_CASE)
     private val heartRateUnitRegex = Regex("\\b(?:heart\\s+rate|pulse|hr)\\b", RegexOption.IGNORE_CASE)
@@ -522,7 +523,7 @@ class SlotExtractor {
                         "calories" -> slots["unit"] = "kcal"
                         "heart rate" -> slots["unit"] = "bpm"
                         "sleep" -> slots["unit"] = "hours"
-                        "active hours" -> slots["unit"] = "hours"
+                        "active hours" -> slots["unit"] = "minutes"
                         "weight" -> slots["unit"] = "kg"
                         "spo2" -> slots["unit"] = "percent"
                         "stress" -> slots["unit"] = "score"
@@ -2456,6 +2457,48 @@ class SlotExtractor {
                         slots["unit"] = "km"
                     }
                 }
+                
+                // Normalize active hours target to minutes with valid intervals
+                if (metric == "active hours" && slots.containsKey("target")) {
+                    var targetValue = when (val t = slots["target"]) {
+                        is Int -> t.toDouble()
+                        is Double -> t
+                        else -> null
+                    }
+                    
+                    if (targetValue != null && targetValue > 0) {
+                        // Check for explicit unit in text near the number
+                        val numberPattern = "\\b${targetValue.toInt()}\\s*(minutes?|mins?|hours?|hrs?)\\b".toRegex(RegexOption.IGNORE_CASE)
+                        val match = numberPattern.find(text)
+                        
+                        var detectedUnit = "minutes" // default
+                        if (match != null && match.groupValues.size > 1) {
+                            val unitText = match.groupValues[1].lowercase()
+                            detectedUnit = when {
+                                unitText.contains("hour") || unitText.contains("hr") -> "hours"
+                                unitText.contains("min") -> "minutes"
+                                else -> "minutes"
+                            }
+                        } else {
+                            // Fallback to extracted unit if no explicit unit near number
+                            detectedUnit = (slots["unit"] as? String) ?: "minutes"
+                        }
+                        
+                        // Convert to minutes if in hours
+                        if (detectedUnit == "hours" || detectedUnit == "hour") {
+                            targetValue *= 60
+                        }
+                        
+                        // Round to nearest valid value (10, 20, 30, 40, 50, 60, 70, 80, 90)
+                        val validValues = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90)
+                        val nearestValue = validValues.minByOrNull { kotlin.math.abs(it - targetValue.toInt()) } ?: 30
+                        
+                        // Return as number only without units
+                        slots["target"] = nearestValue
+                        slots["unit"] = "minutes"
+                    }
+                }
+                
                 if (!slots.containsKey("period")) {
                     val period = extractPeriod(text) ?: "daily"
                     slots["period"] = period

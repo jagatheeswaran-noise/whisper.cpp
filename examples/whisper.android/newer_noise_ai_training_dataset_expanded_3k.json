@@ -1294,6 +1294,24 @@
     }
   },
   {
+    "text": "set Active hours goal as 1 hour",
+    "intent": "SetGoal",
+    "slots": {
+      "metric": "active hours",
+      "target": 1600,
+      "unit": "kcal"
+    }
+  },
+  {
+    "text": "set active minutes goal as 60 minutes",
+    "intent": "SetGoal",
+    "slots": {
+      "metric": "active hours",
+      "target": 60,
+      "unit": "minutes"
+    }
+  },
+  {
     "text": "set calories goal as 1600",
     "intent": "SetGoal",
     "slots": {

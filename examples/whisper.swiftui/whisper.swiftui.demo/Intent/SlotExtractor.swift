@@ -445,7 +445,7 @@ class SlotExtractor {
     private let weightRegex = try! NSRegularExpression(pattern: "\\b(?:weight|weigh|weighing|weighed|kg|kilogram|kilograms|pound|pounds|lbs|lb|body mass|bmi|body weight|mass|scale|heavy|light|stone|gram|grams|ounce|ounces|oz)\\b", options: [.caseInsensitive])
     private let stressRegex = try! NSRegularExpression(pattern: "\\b(?:stress|stressed|stressful|anxiety|anxious|tension|tense|worried|worry|worrying|pressure|pressured|strain|strained|overwhelm|overwhelmed|nervous|nervousness|burnout|mental health|relaxation|relax|calm|peace|peaceful)\\b", options: [.caseInsensitive])
     private let standingRegex = try! NSRegularExpression(pattern: "\\b(?:standing|stand|stood|upright|vertical|on feet|on my feet|stand hours|standing hours|stand time|standing time|stand goal|standing goal|stand ring|standing ring|stand activity|standing activity|stand up|stood up)\\b", options: [.caseInsensitive])
-    private let activeHoursRegex = try! NSRegularExpression(pattern: "\\b(?:active\\s+hours?|activity\\s+hours?|hours?\\s+active|active\\s+time|activity\\s+time|time\\s+active|activar'?s?|activars|hours?\\s+of\\s+activity|hours?\\s+of\\s+movement|movement\\s+hours?|time\\s+spent\\s+active|active\\s+duration|activity\\s+duration|physical\\s+activity\\s+(?:time|hours?)|daily\\s+active\\s+time|total\\s+active\\s+time|time\\s+moving|moving\\s+time)\\b", options: [.caseInsensitive])
+    private let activeHoursRegex = try! NSRegularExpression(pattern: "\\b(?:active\\s+(?:hours?|minutes?)|activity\\s+(?:hours?|minutes?)|(?:hours?|minutes?)\\s+active|active\\s+time|activity\\s+time|time\\s+active|activar'?s?|activars|(?:hours?|minutes?)\\s+of\\s+activity|(?:hours?|minutes?)\\s+of\\s+movement|movement\\s+(?:hours?|minutes?)|time\\s+spent\\s+active|active\\s+duration|activity\\s+duration|physical\\s+activity\\s+(?:time|hours?|minutes?)|daily\\s+active\\s+time|total\\s+active\\s+time|time\\s+moving|moving\\s+time)\\b", options: [.caseInsensitive])
     private let awakeRegex = try! NSRegularExpression(pattern: "\\b(?:awake|waking|woke|awaken|awakened|time\\s+awake|hours\\s+awake|awake\\s+time|waking\\s+time|wake\\s+time|time\\s+spent\\s+awake|time\\s+spent\\s+waking)\\b", options: [.caseInsensitive])
     private let vo2Regex = try! NSRegularExpression(pattern: "\\b(?:vo2|vo2\\s*max|vo2max|v\\s*o\\s*2|v\\s*o\\s*2\\s*max|vo\\s*2|vo\\s*2\\s*max|vo\\s*two|vo\\s*two\\s*max|v\\s*o\\s*two|aerobic\\s+capacity|aerobic\\s+fitness|cardio\\s+fitness|cardiovascular\\s+fitness|max\\s+oxygen|maximum\\s+oxygen|oxygen\\s+uptake|cardio\\s+capacity|endurance\\s+capacity|fitness\\s+level|aerobic\\s+power|oxygen\\s+capacity|cardiorespiratory)\\b", options: [.caseInsensitive])
     private let heartRateUnitRegex = try! NSRegularExpression(pattern: "\\b(?:heart\\s+rate|pulse|hr)\\b", options: [.caseInsensitive])
@@ -2575,6 +2575,54 @@ class SlotExtractor {
                 }
             }
             
+            // Normalize active hours target to minutes with valid intervals
+            if let metric = slots["metric"] as? String, metric == "active hours" {
+                if let target = slots["target"] {
+                    var targetValue: Double
+                    if let intVal = target as? Int {
+                        targetValue = Double(intVal)
+                    } else if let doubleVal = target as? Double {
+                        targetValue = doubleVal
+                    } else {
+                        targetValue = 0
+                    }
+                    
+                    if targetValue > 0 {
+                        // Check for explicit unit in text near the number
+                        let numberPattern = "\\b\(Int(targetValue))\\s*(minutes?|mins?|hours?|hrs?)\\b"
+                        var detectedUnit = "minutes" // default
+                        
+                        if let regex = try? NSRegularExpression(pattern: numberPattern, options: [.caseInsensitive]),
+                           let match = regex.firstMatch(in: text, options: [], range: NSRange(location: 0, length: text.count)),
+                           match.numberOfRanges > 1 {
+                            let unitRange = Range(match.range(at: 1), in: text)!
+                            let unitText = String(text[unitRange]).lowercased()
+                            if unitText.contains("hour") || unitText.contains("hr") {
+                                detectedUnit = "hours"
+                            } else if unitText.contains("min") {
+                                detectedUnit = "minutes"
+                            }
+                        } else {
+                            // Fallback to extracted unit if no explicit unit near number
+                            detectedUnit = (slots["unit"] as? String) ?? "minutes"
+                        }
+                        
+                        // Convert to minutes if in hours
+                        if detectedUnit == "hours" || detectedUnit == "hour" {
+                            targetValue = targetValue * 60
+                        }
+                        
+                        // Round to nearest valid value (10, 20, 30, 40, 50, 60, 70, 80, 90)
+                        let validValues = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+                        let nearestValue = validValues.min(by: { abs($0 - Int(targetValue)) < abs($1 - Int(targetValue)) }) ?? 30
+                        
+                        // Return as number only without units
+                        slots["target"] = nearestValue
+                        slots["unit"] = "minutes"
+                    }
+                }
+            }
+            
             // Add default unit based on metric if not already set
             if slots["unit"] == nil, let metric = slots["metric"] as? String {
                 switch metric {
@@ -2589,7 +2637,7 @@ class SlotExtractor {
                 case "sleep":
                     slots["unit"] = "hours"
                 case "active hours":
-                    slots["unit"] = "hours"
+                    slots["unit"] = "minutes"
                 case "weight":
                     slots["unit"] = "kg"
                 case "spo2":
