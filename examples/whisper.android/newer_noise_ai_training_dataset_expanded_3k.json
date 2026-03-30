@@ -4150,6 +4150,32 @@
     }
   },
   {
+    "text": "What is my heart rate?",
+    "intent": "QueryPoint",
+    "slots": {
+      "metric": "heart rate",
+      "time_ref": "today",
+      "unit": "bpm"
+    }
+  },
+  {
+    "text": "What is my stress level?",
+    "intent": "QueryPoint",
+    "slots": {
+      "metric": "stress level",
+      "time_ref": "today"
+    }
+  },
+  {
+    "text": "What is my blood oxygen level?",
+    "intent": "QueryPoint",
+    "slots": {
+      "metric": "blood oxygen",
+      "time_ref": "today",
+      "unit": "percent"
+    }
+  },
+  {
     "text": "show my heart rate last Friday",
     "intent": "QueryPoint",
     "slots": {
@@ -12278,6 +12304,14 @@
       "metric": "steps",
       "period": "last week",
       "unit": "count"
+    }
+  },
+  {
+    "text": "Open flashlight",
+    "intent": "ToggleFeature",
+    "slots": {
+      "action": "on",
+      "feature": "flashlight"
     }
   },
   {
@@ -24544,6 +24578,27 @@
     }
   },
   {
+    "text": "what is my current SpO2 level",
+    "intent": "OpenApp",
+    "slots": {
+      "app_name": "blood oxygen monitor"
+    }
+  },
+  {
+    "text": "what is current blood oxygen",
+    "intent": "OpenApp",
+    "slots": {
+      "app_name": "blood oxygen monitor"
+    }
+  },
+  {
+    "text": "what is my current stress level",
+    "intent": "OpenApp",
+    "slots": {
+      "app_name": "stress monitor"
+    }
+  },
+  {
     "text": "my steps",
     "intent": "QueryPoint",
     "slots": {
@@ -24745,6 +24800,13 @@
     "intent": "OpenApp",
     "slots": {
       "app_name": "blood oxygen monitor"
+    }
+  },
+  {
+    "text": "What is my current heart rate",
+    "intent": "OpenApp",
+    "slots": {
+      "app_name": "heart rate monitor"
     }
   },
   {

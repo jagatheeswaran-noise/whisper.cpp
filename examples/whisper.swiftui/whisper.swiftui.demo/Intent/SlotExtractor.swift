@@ -1678,12 +1678,13 @@ class SlotExtractor {
     
     
     private func extractState(text: String) -> String? {
-        if text.range(of: "\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|light\\s+up|flip\\s+on|on)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
-            return "on"
-        }
-        
+        // Check OFF state FIRST to prioritize explicit OFF commands like "turn off" over ambiguous "on" in feature names
         if text.range(of: "\\b(?:turn\\s+off|disable|disabled|disabling|deactivate|deactivated|deactivating|switch\\s+off|stop|stopped|stopping|shut\\s+off|shut\\s+down|power\\s+off|kill|close|mute|muted|pause|paused|block|deny|disengage|disengaged|disengaging|set\\s+off|put\\s+off|make\\s+it\\s+off|get\\s+it\\s+off|bring\\s+down|sleep|suspend|flip\\s+off|cut\\s+off|off)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
             return "off"
+        }
+        
+        if text.range(of: "\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|light\\s+up|flip\\s+on|on)\\b", options: [.regularExpression, .caseInsensitive]) != nil {
+            return "on"
         }
         
         if text.range(of: "\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b", options: [.regularExpression, .caseInsensitive]) != nil {

@@ -1583,11 +1583,11 @@ class SlotExtractor {
     
     private fun extractState(text: String): String? {
         return when {
+            // OFF state - expanded with 20+ variations (checked FIRST to prioritize explicit OFF commands)
+            text.contains("\\b(?:turn\\s+off|disable|disabled|disabling|deactivate|deactivated|deactivating|switch\\s+off|stop|stopped|stopping|shut\\s+off|shut\\s+down|power\\s+off|kill|close|mute|muted|pause|paused|block|deny|disengage|disengaged|disengaging|set\\s+off|put\\s+off|make\\s+it\\s+off|get\\s+it\\s+off|bring\\s+down|sleep|suspend|flip\\s+off|cut\\s+off|off)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "off"
+            
             // ON state - expanded with 20+ variations
             text.contains("\\b(?:turn\\s+on|enable|enabled|enabling|activate|activated|activating|switch\\s+on|start|started|starting|power\\s+on|boot|boot\\s+up|fire\\s+up|launch|open|unmute|unmuted|resume|allow|permit|engage|engaged|engaging|set\\s+on|put\\s+on|make\\s+it\\s+on|get\\s+it\\s+on|bring\\s+up|light\\s+up|flip\\s+on|on)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "on"
-            
-            // OFF state - expanded with 20+ variations
-            text.contains("\\b(?:turn\\s+off|disable|disabled|disabling|deactivate|deactivated|deactivating|switch\\s+off|stop|stopped|stopping|shut\\s+off|shut\\s+down|power\\s+off|kill|close|mute|muted|pause|paused|block|deny|disengage|disengaged|disengaging|set\\s+off|put\\s+off|make\\s+it\\s+off|get\\s+it\\s+off|bring\\s+down|sleep|suspend|flip\\s+off|cut\\s+off|off)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "off"
             
             // INCREASE state - expanded with 20+ variations
             text.contains("\\b(?:increase|increased|increasing|up|higher|high|raise|raised|raising|boost|boosted|boosting|amplify|amplified|amplifying|enhance|enhanced|enhancing|elevate|elevated|elevating|pump\\s+up|turn\\s+up|crank\\s+up|ramp\\s+up|scale\\s+up|step\\s+up|jack\\s+up|bump\\s+up|push\\s+up|bring\\s+up|make\\s+it\\s+higher|louder|brighter|stronger|more|maximize|max\\s+out|intensify)\\b".toRegex(RegexOption.IGNORE_CASE)) -> "increase"

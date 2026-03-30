@@ -82,6 +82,32 @@ class IntentClassifier: ObservableObject {
     private var intentMapping: [Int: String] = []
     private let slotExtractor = SlotExtractor()
     
+    // MARK: - Intent Correction
+    
+    /// Corrects misclassified intents based on rule-based patterns
+    /// This handles edge cases where the model gets confused due to class imbalance
+    private func correctMisclassifiedIntent(text: String, predictedIntent: String) -> String {
+        let lowerText = text.lowercased()
+        
+        // Rule 1: If OpenApp is predicted but text contains flashlight/torch patterns, change to ToggleFeature
+        if predictedIntent == "OpenApp" {
+            let torchPattern = #"\b(?:torches?|flashlights?|flash\s+lights?|led\s+lights?|led\s+torches?|camera\s+flashes?|lights?|lamps?|lanterns?|beams?|illuminations?|bright\s+lights?|phone\s+lights?|mobile\s+lights?|emergency\s+lights?|torch\s+lights?|strobes?|strobe\s+lights?|spotlights?|searchlights?|headlights?|flash\s+lamps?|portable\s+lights?|hand\s+lights?|led\s+flashes?|camera\s+lights?|phone\s+torches?|device\s+lights?|built-in\s+lights?|integrated\s+lights?)\b"#
+            
+            if lowerText.range(of: torchPattern, options: .regularExpression) != nil {
+                Self.logger.info("⚠️ Intent correction: OpenApp → ToggleFeature (detected flashlight/torch)")
+                return "ToggleFeature"
+            }
+        }
+        
+        // Add more correction rules here as needed in the future
+        // Example:
+        // if predictedIntent == "SomeIntent" && someCondition {
+        //     return "CorrectIntent"
+        // }
+        
+        return predictedIntent
+    }
+    
     // MARK: - Initialization
     
     func initialize() async -> Bool {
@@ -389,11 +415,17 @@ class IntentClassifier: ObservableObject {
                 Self.logger.info("  \(intent): \(String(format: "%.3f", prob))")
             }
             
+            // Step 3.5: Correct misclassified intents using rule-based patterns
+            let correctedIntent = correctMisclassifiedIntent(text: text, predictedIntent: bestIntent)
+            if correctedIntent != bestIntent {
+                Self.logger.info("✅ Intent corrected: \(bestIntent) → \(correctedIntent)")
+            }
+            
             // Step 4: Extract slots for the predicted intent
-            let slotResult = await slotExtractor.extractSlots(text: text, intent: bestIntent)
+            let slotResult = await slotExtractor.extractSlots(text: text, intent: correctedIntent)
             
             return IntentResult(
-                intent: bestIntent,
+                intent: correctedIntent,
                 confidence: confidence,
                 allProbabilities: allProbabilities,
                 slots: slotResult.slots,

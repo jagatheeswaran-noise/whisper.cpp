@@ -32,6 +32,32 @@ class IntentClassifier(private val context: Context) {
         private const val MAX_SEQUENCE_LENGTH = 256  // Updated to match your model
     }
     
+    /**
+     * Corrects misclassified intents based on rule-based patterns
+     * This handles edge cases where the model gets confused due to class imbalance
+     */
+    private fun correctMisclassifiedIntent(text: String, predictedIntent: String): String {
+        val lowerText = text.lowercase()
+        
+        // Rule 1: If OpenApp is predicted but text contains flashlight/torch patterns, change to ToggleFeature
+        if (predictedIntent == "OpenApp") {
+            val torchPattern = "\\b(?:torches?|flashlights?|flash\\s+lights?|led\\s+lights?|led\\s+torches?|camera\\s+flashes?|lights?|lamps?|lanterns?|beams?|illuminations?|bright\\s+lights?|phone\\s+lights?|mobile\\s+lights?|emergency\\s+lights?|torch\\s+lights?|strobes?|strobe\\s+lights?|spotlights?|searchlights?|headlights?|flash\\s+lamps?|portable\\s+lights?|hand\\s+lights?|led\\s+flashes?|camera\\s+lights?|phone\\s+torches?|device\\s+lights?|built-in\\s+lights?|integrated\\s+lights?)\\b".toRegex(RegexOption.IGNORE_CASE)
+            
+            if (torchPattern.containsMatchIn(lowerText)) {
+                Log.d(LOG_TAG, "⚠️ Intent correction: OpenApp → ToggleFeature (detected flashlight/torch)")
+                return "ToggleFeature"
+            }
+        }
+        
+        // Add more correction rules here as needed in the future
+        // Example:
+        // if (predictedIntent == "SomeIntent" && someCondition) {
+        //     return "CorrectIntent"
+        // }
+        
+        return predictedIntent
+    }
+    
     suspend fun initialize(): Boolean {
         return try {
             Log.d(LOG_TAG, "Initializing Intent Classifier...")
@@ -155,11 +181,17 @@ class IntentClassifier(private val context: Context) {
                 Log.d(LOG_TAG, "  ${intent}: ${"%.3f".format(prob)}")
             }
             
+            // Step 3.5: Correct misclassified intents using rule-based patterns
+            val correctedIntent = correctMisclassifiedIntent(text, bestIntent)
+            if (correctedIntent != bestIntent) {
+                Log.d(LOG_TAG, "✅ Intent corrected: $bestIntent → $correctedIntent")
+            }
+            
             // Step 4: Extract slots for the predicted intent
-            val slotResult = slotExtractor.extractSlots(text, bestIntent)
+            val slotResult = slotExtractor.extractSlots(text, correctedIntent)
             
             IntentResult(
-                intent = bestIntent,
+                intent = correctedIntent,
                 confidence = confidence,
                 allProbabilities = allProbabilities,
                 slots = slotResult.slots,
