@@ -2457,6 +2457,18 @@ class SlotExtractor {
                         slots["unit"] = "km"
                     }
                 }
+
+                // If metric is calories, cap the target to maximum settable goal (1000 in our case)
+                if (metric == "calories" && slots.containsKey("target")) {
+                    val target = when (val t = slots["target"]) {
+                        is Int -> t.toDouble()
+                        is Double -> t
+                        else -> null
+                    }
+                    if (target!=null && target > 1000) {
+                        slots["target"] = 1000.0
+                    }
+                }
                 
                 // Normalize active hours target to minutes with valid intervals
                 if (metric == "active hours" && slots.containsKey("target")) {

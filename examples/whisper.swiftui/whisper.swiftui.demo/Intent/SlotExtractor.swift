@@ -2575,6 +2575,24 @@ class SlotExtractor {
                     }
                 }
             }
+
+            // If metric is calories, cap the target to maximum settable goal (1000 in our case)
+            if let metric = slots["metric"] as? String, metric == "calories" {
+                if let target = slots["target"] {
+                    let targetValue: Double
+                    if let intVal = target as? Int {
+                        targetValue = Double(intVal)
+                    } else if let doubleVal = target as? Double {
+                        targetValue = doubleVal
+                    } else {
+                        targetValue = 0
+                    }
+                    
+                    if targetValue > 1000 {
+                        slots["target"] = 1000
+                    }
+                }
+            }
             
             // Normalize active hours target to minutes with valid intervals
             if let metric = slots["metric"] as? String, metric == "active hours" {
