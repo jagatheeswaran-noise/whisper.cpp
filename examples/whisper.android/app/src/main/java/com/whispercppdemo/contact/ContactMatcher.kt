@@ -132,6 +132,16 @@ class ContactMatcher(private val context: Context) {
     }
     
     /**
+     * Clean punctuation from input string
+     */
+    private fun cleanPunctuation(input: String): String {
+        // Remove common punctuation marks that might appear in transcriptions
+        return input.replace(Regex("[,;.!?:\"'`]"), "")
+            .replace(Regex("\\s+"), " ")  // Normalize multiple spaces to single space
+            .trim()
+    }
+    
+    /**
      * Match a name against the contact list using optimized priority order:
      * PHASE 1: All exact matches (full name, then all sub-name combinations)
      * PHASE 2: Fuzzy matches with pre-computed phonetic normalizations (full name, then all sub-name combinations)
@@ -140,6 +150,12 @@ class ContactMatcher(private val context: Context) {
         Log.d(LOG_TAG, "\n" + "=".repeat(50))
         Log.d(LOG_TAG, "CONTACT MATCHING STARTED")
         Log.d(LOG_TAG, "Input name: '$inputName'")
+        
+        // Clean punctuation from input first
+        val cleanedInput = cleanPunctuation(inputName)
+        if (cleanedInput != inputName) {
+            Log.d(LOG_TAG, "Cleaned input: '$cleanedInput' (removed punctuation)")
+        }
         Log.d(LOG_TAG, "Confidence threshold: ${confidenceThreshold}%")
         
         if (normalizedContacts.isEmpty()) {
@@ -151,7 +167,7 @@ class ContactMatcher(private val context: Context) {
             return ContactMatchResult(null, 0f, MatchType.NO_MATCH)
         }
         
-        val normalizedInput = inputName.trim().lowercase()
+        val normalizedInput = cleanedInput.trim().lowercase()
         val inputParts = normalizedInput.split(" ").filter { it.isNotBlank() }
         
         Log.d(LOG_TAG, "Input parts: ${inputParts.joinToString(", ")}")

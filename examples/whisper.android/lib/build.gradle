@@ -19,7 +19,7 @@ android {
         externalNativeBuild {
             cmake {
                 // Disable OpenMP to avoid libomp.so dependency issues on Android
-                // arguments "-DGGML_OPENMP=OFF"
+                arguments "-DGGML_OPENMP=OFF"
 
                 // When set, builds whisper.android against the version located
                 // at GGML_HOME instead of the copy bundled with whisper.cpp.

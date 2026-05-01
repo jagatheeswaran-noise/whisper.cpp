@@ -42,7 +42,8 @@ import java.nio.ByteOrder
 private const val LOG_TAG = "MainScreenViewModel"
 
 // Base prompt to improve short command recognition (contacts will be added dynamically)
-private const val BASE_PROMPT = "Voice commands, Start Running, stop, start, record, play, pause, resume, next, previous, open, left, right, go, back, help, exit, set an, alarm, timer, stopwatch, set an alarm, set alarm, set timer 5 min, start stopwatch, stop timer, reset stopwatch, pause timer, resume timer, mute, unmute, volume up, volume down, brightness up, brightness down, increase, decrease, dim, silence, music, song, track, what's the weather today, weather tomorrow, forecast, rain, snow, air quality, steps today, steps this week, weekly steps, sleep score, sleep score yesterday, sleep score last week, what is my heart rate today, weekly heart rate, how much calories today, calories yesterday, spo2 level today, spo2 yesterday, stress alert, set stress 80%, set heart rate high 120, set heart rate low 50, set spo2 low 90, set distance goal 5 km, set steps goal 10000, set calories goal 2000, update sleep goal 8 hours, hiking, running, walking, treadmill, swimming, rowing, yoga, meditation, cycling, indoor cycling, strength training, workout start, workout stop, workout pause, open weather, open spo2, measure spo2, show trend, weekly trend, last week, yesterday, today, tomorrow, DND, enable DND, disable DND, AOD on, AOD off, raise to wake on, raise to wake off, vibration on, vibration off"
+private const val BASE_PROMPT = 
+"""start timer, stop timer, set alarm, turn on DND, turn off DND, enable AOD, disable AOD, raise to wake, play music, open app, heart rate, SPO2, sleep score, stress level, calories burned, steps today, VO2 max, active hours, blood oxygen, maximum heart rate, minimum heart rate, average heart rate, set steps goal to 10000, set calories goal to 2000, set active hours goal to 8, set distance goal to 5 km, set sleep goal to 8 hours, set standing goal to 12 hours, set heart rate alert high 120, set heart rate alert low 50, set SpO2 alert low 90, set stress alert high 80"""
 
 class MainScreenViewModel(private val application: Application) : AndroidViewModel(application) {
     var canTranscribe by mutableStateOf(false)
@@ -494,10 +495,55 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
         canTranscribe = true
     }
     
+    /**
+     * Clean punctuation from transcript to improve intent classification
+     * Removes commas, periods, etc. that may interfere with action word recognition
+     * Also detects and removes repeated phrases (e.g., "call akshay, call akshay" -> "call akshay")
+     */
+    private fun cleanTranscriptPunctuation(transcript: String): String {
+        // First, clean punctuation
+        var cleaned = transcript.replace(Regex("[,;.!?:\"'`]"), "")
+            .replace(Regex("\\s+"), " ")  // Normalize multiple spaces to single space
+            .trim()
+        
+        // Detect and remove repeated phrases
+        // Check if the transcript is repeated (split roughly in half and compare)
+        val words = cleaned.split(" ")
+        if (words.size >= 4) {  // Only check if there are at least 4 words
+            // Try different split points to detect repetition
+            for (splitPoint in 2..(words.size / 2)) {
+                val firstPart = words.subList(0, splitPoint).joinToString(" ")
+                val remainingWords = words.subList(splitPoint, words.size)
+                
+                // Check if the remaining part starts with the same phrase
+                if (remainingWords.size >= splitPoint) {
+                    val secondPart = remainingWords.subList(0, splitPoint).joinToString(" ")
+                    
+                    // Case-insensitive comparison
+                    if (firstPart.equals(secondPart, ignoreCase = true)) {
+                        // Found repetition - keep only the first occurrence
+                        Log.d(LOG_TAG, "Detected repeated phrase: '$firstPart'")
+                        cleaned = firstPart
+                        break
+                    }
+                }
+            }
+        }
+        
+        return cleaned
+    }
+    
     private suspend fun classifyIntentFromTranscript(transcript: String): String = withContext(Dispatchers.Default) {
+        // Clean punctuation that might interfere with intent classification
+        val cleanedTranscript = cleanTranscriptPunctuation(transcript)
+        if (cleanedTranscript != transcript) {
+            Log.d(LOG_TAG, "Original transcript: '$transcript'")
+            Log.d(LOG_TAG, "Cleaned transcript: '$cleanedTranscript'")
+        }
+        
         try {
             val classificationStart = System.currentTimeMillis()
-            val result = intentClassifier?.classifyIntent(transcript)
+            val result = intentClassifier?.classifyIntent(cleanedTranscript)
             val classificationElapsed = System.currentTimeMillis() - classificationStart
             
             withContext(Dispatchers.Main) {
@@ -616,11 +662,14 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                     // Classify intent for the transcribed text and save to CSV
                                     launch {
                                         try {
+                                            // Clean transcript once for all processing
+                                            val cleanedTranscript = cleanTranscriptPunctuation(result.trim())
+                                            
                                             // Classify intent first
                                             val intentResult = classifyIntentFromTranscript(result.trim())
                                             
-                                            // Extract slots
-                                            var slotResult = slotExtractor.extractSlots(result.trim(), intentResult)
+                                            // Extract slots using cleaned transcript
+                                            var slotResult = slotExtractor.extractSlots(cleanedTranscript, intentResult)
                                             val updatedSlots: MutableMap<String, Any> = slotResult.slots.toMutableMap()
                                             
                                             // If intent is PhoneAction, perform contact matching
@@ -690,7 +739,7 @@ class MainScreenViewModel(private val application: Application) : AndroidViewMod
                                             val slotsJson = JSONObject(updatedSlots as Map<*, *>).toString()
                                             
                                             // Check if required slots are satisfied for this specific intent and text
-                                            val hasRequiredSlots = slotExtractor.areRequiredSlotsSatisfied(intentResult, updatedSlots, result.trim())
+                                            val hasRequiredSlots = slotExtractor.areRequiredSlotsSatisfied(intentResult, updatedSlots, cleanedTranscript)
                                             
                                             if (!hasRequiredSlots) {
                                                 withContext(Dispatchers.Main) {

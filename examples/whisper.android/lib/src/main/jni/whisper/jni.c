@@ -209,26 +209,32 @@ Java_com_whispercpp_whisper_WhisperLib_00024Companion_fullTranscribeWithPrompt(
 
     // Optimized parameters for faster real-time transcription
     struct whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
-    params.print_realtime = false;  // Disable real-time printing for speed
+    params.print_realtime = false;
     params.print_progress = false;
-    params.print_timestamps = false;  // Disable timestamps for speed (we handle timing in Java)
+    params.print_timestamps = false;
     params.print_special = false;
     params.translate = false;
     params.language = "en";
-    params.n_threads = num_threads > 4 ? 4 : num_threads;  // Limit threads to 4 for optimal mobile performance
+    params.n_threads = num_threads > 4 ? 4 : num_threads;
     params.offset_ms = 0;
-    params.no_context = false;  // Enable context for better longer command recognition
+    params.no_context = true;  // Prevent using previous transcriptions as context - each command is independent
     params.single_segment = true;  // Force single segment for short commands - major speed boost
-    params.audio_ctx = 512;  // Increased audio context for longer commands (balance of speed vs accuracy)
+    params.audio_ctx = 378;  // Increased audio context for longer commands (balance of speed vs accuracy)
     params.suppress_blank = true;  // Skip blank segments
     params.suppress_nst = true;  // Suppress non-speech tokens for commands
     params.temperature = 0.0f;    // Greedy decoding for maximum speed
-    params.max_len = 150;          // Increased length limit for longer commands
-    
-    // Set the prompt if provided
-    if (prompt_chars != NULL) {
+    params.max_len = 150;
+    params.token_timestamps = false;
+    params.entropy_thold = 2.8f;
+    params.logprob_thold = -1.0f;   // "Stop if I'm unsure what I'm saying"
+    params.no_speech_thold = 0.6f;  // "Don't even try if there's no speech"
+
+    // Set the initial_prompt if provided - this guides vocabulary but doesn't use previous transcriptions
+    if (prompt_chars != NULL && strlen(prompt_chars) > 0) {
         params.initial_prompt = prompt_chars;
-        LOGI("Using prompt: %s", prompt_chars);
+        LOGI("Using initial_prompt (%zu chars): %.100s...", strlen(prompt_chars), prompt_chars);
+    } else {
+        params.initial_prompt = NULL;
     }
 
     whisper_reset_timings(context);
