@@ -217,14 +217,16 @@ Java_com_whispercpp_whisper_WhisperLib_00024Companion_fullTranscribeWithPrompt(
     params.language = "en";
     params.n_threads = num_threads > 4 ? 4 : num_threads;  // Limit threads to 4 for optimal mobile performance
     params.offset_ms = 0;
-    params.no_context = false;  // Enable context for better longer command recognition
+    params.no_context = true;  
     params.single_segment = true;  // Force single segment for short commands - major speed boost
-    params.audio_ctx = 512;  // Increased audio context for longer commands (balance of speed vs accuracy)
+    params.audio_ctx = 378;  // Increased audio context for longer commands (balance of speed vs accuracy)
     params.suppress_blank = true;  // Skip blank segments
     params.suppress_nst = true;  // Suppress non-speech tokens for commands
     params.temperature = 0.0f;    // Greedy decoding for maximum speed
-    params.max_len = 150;          // Increased length limit for longer commands
-    
+    params.max_len = 128;
+    params.token_timestamps = false;
+    params.entropy_thold = 2.8f;
+
     // Set the prompt if provided
     if (prompt_chars != NULL) {
         params.initial_prompt = prompt_chars;
